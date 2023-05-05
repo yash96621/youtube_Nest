@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  email          String   @unique
+  history_on     Boolean  @default(true)
+  watchlist      String[] @db.ObjectId
+  history        String[] @db.ObjectId
+  Uploaded_video String[] @db.ObjectId
+  Download_video String[] @db.ObjectId
+  Comment_video  String[] @db.ObjectId
+  Subscription   String[] @db.ObjectId
+  Liked_video    String[] @db.ObjectId
+  disLiked_video String[] @db.ObjectId
+  notify_count   Int?     @default(0)
+  date           DateTime @default(now())
+}
+
+model Video {
+  id             String     @id @default(auto()) @map("_id") @db.ObjectId
+  video_name     String
+  channel_name   String
+  description    String
+  type           String[]
+  video_link     String
+  thumbnail_link String
+  date           DateTime
+  views          Int        @default(0)
+  likes          Int        @default(0)
+  dislikes       Int        @default(0)
+  Comments       Comments[]
+}
+
+model Comments {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  user_photo String
+  user_name  String
+  message    String
+  video_id   String @db.ObjectId
+  video      Video  @relation(fields: [video_id], references: [id])
+}
