@@ -1,4 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { AddCommentsDto } from './dto/comment.dto';
 
 @Injectable()
-export class CommentsService {}
+export class CommentsService {
+  async addcomment(dto: AddCommentsDto) {}
+}

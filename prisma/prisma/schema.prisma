@@ -50,3 +50,7 @@ model Comments {
   video_id   String @db.ObjectId
   video      Video  @relation(fields: [video_id], references: [id])
 }
+
+model subscriber {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+}
