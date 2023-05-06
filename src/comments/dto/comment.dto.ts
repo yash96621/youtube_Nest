@@ -1,6 +1,6 @@
 import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 
-export class CommentsDto {
+export class AddCommentsDto {
   @IsString()
   @IsNotEmpty()
   comment: string;

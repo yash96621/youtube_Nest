@@ -7,7 +7,7 @@ export class CommentsController {
   constructor(private CommentsService: CommentsService) {}
 
   @Post('/addcomment')
-  addcomments(@Body dto: AddCommentsDto) {
+  addcomments(@Body() dto: AddCommentsDto) {
     return this.CommentsService.addcomment(dto);
   }
 }
