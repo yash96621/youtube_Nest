@@ -11,20 +11,22 @@ datasource db {
 }
 
 model User {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
   name           String
-  email          String   @unique
-  history_on     Boolean  @default(true)
-  watchlist      Video[]  @relation("watchlist")
-  history        Video[]  @relation("history")
-  Uploaded_video Video[]  @relation("Uploaded_video")
-  Download_video Video[]  @relation("Download_video")
-  Comment_video  Video[]  @relation("Comment_video")
-  Liked_video    Video[]  @relation("Liked_video")
-  disLiked_video Video[]  @relation("disLiked_video")
-  notify_count   Int?     @default(0)
-  date           DateTime @default(now())
+  user_photo     String
+  email          String       @unique
+  history_on     Boolean      @default(true)
+  watchlist      Video[]      @relation("watchlist")
+  history        Video[]      @relation("history")
+  Uploaded_video Video[]      @relation("Uploaded_video")
+  Download_video Video[]      @relation("Download_video")
+  Comment_video  Video[]      @relation("Comment_video")
+  Liked_video    Video[]      @relation("Liked_video")
+  disLiked_video Video[]      @relation("disLiked_video")
+  notify_count   Int?         @default(0)
+  date           DateTime     @default(now())
   Video          Video[]
+  Subsctipber    Subscriber[]
 }
 
 model Video {
@@ -68,5 +70,7 @@ model Comments {
 }
 
 model Subscriber {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id     String  @id @default(auto()) @map("_id") @db.ObjectId
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String? @db.ObjectId
 }

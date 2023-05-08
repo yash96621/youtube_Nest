@@ -1,8 +1,18 @@
 import { Module } from '@nestjs/common';
 import { CommentsModule } from './comments/comments.module';
+import { AuthModule } from './auth/auth.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [CommentsModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    CommentsModule,
+    AuthModule,
+    PrismaModule,
+  ],
   controllers: [],
   providers: [],
 })
