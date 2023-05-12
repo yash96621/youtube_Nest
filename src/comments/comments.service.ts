@@ -3,5 +3,5 @@ import { AddCommentsDto } from './dto/comment.dto';
 
 @Injectable()
 export class CommentsService {
-  async addcomment(dto: AddCommentsDto) {}
+  async addcomment(Req) {}
 }
