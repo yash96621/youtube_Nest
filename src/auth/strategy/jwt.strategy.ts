@@ -8,18 +8,23 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   // key value 'jwt' is for identify fot authguad
   //by defualt it is 'jwt' black or written is right
+  
   constructor(config: ConfigService, private prisma: PrismaService) {
+
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: config.get('JWT_SECRET'),
     });
   }
-  async validate(payload: { email: string }) {
+  
+  async validate(payload: { Useremail: string ,UserName:string ,Userid:string }) {
+
     const user = await this.prisma.user.findUnique({
       where: {
-        email: payload.email,
+        email: payload.Useremail
       },
     });
+    console.log(user)
     return user;
   }
 }

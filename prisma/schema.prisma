@@ -6,14 +6,14 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+ provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
   id             String       @id @default(auto()) @map("_id") @db.ObjectId
   name           String
-  user_photo     String
+  picture     String
   email          String       @unique
   history_on     Boolean      @default(true)
   watchlist      Video[]      @relation("watchlist")
@@ -24,7 +24,7 @@ model User {
   Liked_video    Video[]      @relation("Liked_video")
   disLiked_video Video[]      @relation("disLiked_video")
   notify_count   Int?         @default(0)
-  date           DateTime     @default(now())
+  createdAt           DateTime     @default(now())
   Video          Video[]
   Subsctipber    Subscriber[]
 }

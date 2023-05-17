@@ -7,9 +7,13 @@ export class userlogin {
 
   @IsString()
   @IsNotEmpty()
-  user_photo: string;
+  picture: string;
 
   @IsString()
   @IsNotEmpty()
   name: string;
+
+  @IsString()
+  @IsNotEmpty()
+  systemSceretKey: string;
 }
