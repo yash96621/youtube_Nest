@@ -6,13 +6,15 @@ import { PrismaClient } from '@prisma/client';
 export class PrismaService extends PrismaClient {
   constructor(config: ConfigService) {
     super({
-    
       datasources: {
-       
         db: {
           url: config.get('DATABASE_URL'),
         },
       },
     });
+  }
+
+  CleanDb() {
+    return this.$transaction([this.user.deleteMany()]);
   }
 }

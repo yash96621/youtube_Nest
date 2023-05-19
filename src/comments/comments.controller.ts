@@ -2,8 +2,8 @@ import { CommentsService } from './comments.service';
 import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { AddCommentsDto } from './dto/comment.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { JwtGuard } from 'src/auth/guard';
-import { GetUser } from 'src/auth/decorator';
+import { JwtGuard } from '../auth/guard';
+import { GetUser } from '../auth/decorator';
 
 @UseGuards(JwtGuard) //==> controller level guard
 @Controller('comments')

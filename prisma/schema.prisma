@@ -6,16 +6,16 @@ generator client {
 }
 
 datasource db {
- provider = "mongodb"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
   id             String       @id @default(auto()) @map("_id") @db.ObjectId
   name           String
-  picture     String
+  picture        String
   email          String       @unique
-  history_on     Boolean      @default(true)
+  History_save   Boolean      @default(true)
   watchlist      Video[]      @relation("watchlist")
   history        Video[]      @relation("history")
   Uploaded_video Video[]      @relation("Uploaded_video")
@@ -24,17 +24,14 @@ model User {
   Liked_video    Video[]      @relation("Liked_video")
   disLiked_video Video[]      @relation("disLiked_video")
   notify_count   Int?         @default(0)
-  createdAt           DateTime     @default(now())
-  Video          Video[]
-  Subsctipber    Subscriber[]
+  notification   Int?         @default(0)
+  createdAt      DateTime     @default(now())
+  Subscription   Subscriber[]
 }
 
 model Video {
   id               String     @id @default(auto()) @map("_id") @db.ObjectId
   video_name       String
-  channel_name     String
-  uploaderId       String     @db.ObjectId
-  uploader         User       @relation(fields: [uploaderId], references: [id])
   description      String
   type             String[]
   video_link       String
