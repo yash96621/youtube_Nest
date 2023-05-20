@@ -8,13 +8,14 @@ import { ValidationPipe } from '@nestjs/common';
 // }
 
 async function bootstrap() {
-
-  const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes( new ValidationPipe({
-    whitelist:true   //to another paramater can not accept
-  }))   // to use dto , and also use it global level without this can not effect of dto
+  const app = await NestFactory.create(AppModule, { cors: true });
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, //to another paramater can not accept
+    }),
+  ); // to use dto , and also use it global level without this can not effect of dto
   // app.use(globalmiddleware)   //global middleware
-  app.enableCors()
+
   await app.listen(5000);
 }
 bootstrap();

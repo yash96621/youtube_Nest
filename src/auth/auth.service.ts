@@ -9,10 +9,8 @@ import { JwtService } from '@nestjs/jwt';
 import { randomUUID } from 'crypto';
 import { v4 as uuid } from 'uuid';
 
-
 @Injectable()
 export class AuthService {
-
   constructor(
     private prisma: PrismaService,
     private config: ConfigService,
@@ -20,17 +18,16 @@ export class AuthService {
   ) {}
 
   async login(dto: userlogin) {
-  
     try {
-      console.log(dto)
+      console.log(dto);
       const user = await this.prisma.user.findFirst({
         where: {
           email: dto.email,
-        }
+        },
       });
-      console.log("user",user)
-      
-      const authToken = await this.SignToken(dto.email, dto.name );
+      console.log('user', user);
+
+      const authToken = await this.SignToken(dto.email, dto.name);
       if (!user) {
         const cuser = await this.prisma.user.create({
           data: {
@@ -40,11 +37,11 @@ export class AuthService {
           },
         });
 
-        console.log("cuser",cuser)
-       return {
+        console.log('cuser', cuser);
+        return {
           authToken,
           user: cuser,
-        }
+        };
       } else {
         return {
           authToken,
@@ -52,38 +49,37 @@ export class AuthService {
         };
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       throw new InternalServerErrorException();
     }
   }
 
   //this is generate token
   async SignToken(email: string, name: string): Promise<string> {
+    console.log(email, name);
     const id: string = uuid();
     const data = {
       Useremail: email,
       UserName: name,
-      Userid:id
+      Userid: id,
     };
     const secret = this.config.get('JWT_SECRET');
     const token = await this.jwt.signAsync(data, {
-      expiresIn: '5h',
+      expiresIn: '1d',
       secret: secret,
     });
     return token;
   }
 
-
-
-  async Refreshlogin(req:any) {
+  async Refreshlogin(req: any) {
     try {
       const authToken = await this.SignToken(req.user.email, req.user.name);
-        return {
-          authToken,
-          user: req.user,
-        };
+      return {
+        authToken,
+        user: req.user,
+      };
     } catch (error) {
-      console.log(error)
+      console.log(error);
       throw new InternalServerErrorException();
     }
   }

@@ -9,16 +9,39 @@ export class LibraryService {
 
   async turnHistory(email: string, dto: historyturn) {
     try {
+      const his = !dto.History_save;
+      console.log(his);
       const user = await this.prisma.user.update({
         where: {
           email: email,
         },
         data: {
-          History_save: dto.History_save,
+          History_save: his,
         },
       });
+      console.log(user);
       return {
-        success: true,
+        History_save: his,
+      };
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async clearHistory(email: string) {
+    try {
+      const user = await this.prisma.user.update({
+        where: {
+          email: email,
+        },
+        data: {
+          history: {},
+        },
+      });
+      console.log(user);
+      return {
+        Success: true,
       };
     } catch (error) {
       console.log(error);

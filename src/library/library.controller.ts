@@ -1,6 +1,14 @@
 import { JwtGuard } from '../auth/guard';
 import { LibraryService } from './library.service';
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  UseGuards,
+  Get,
+  Patch,
+  Delete,
+} from '@nestjs/common';
 
 import { GetUser } from '../auth/decorator';
 
@@ -11,15 +19,15 @@ import { historyturn } from './dto';
 export class LibraryController {
   constructor(private LibraryService: LibraryService) {}
 
-  // @Post('/turnHistory')
-  // turnHistory(@GetUser('email') user: User, @Req() req: Request) {
-  //   console.log(user);
-  //   // return this.LibraryService.turnHistory(req);
-  // }
-
-  @Post('/turnHistory')
+  @Patch('turnHistory')
   turnHistory(@GetUser('email') email: string, @Body() dto: historyturn) {
     console.log(email, dto);
     return this.LibraryService.turnHistory(email, dto);
+  }
+
+  @Delete('clearHistory')
+  clearHistory(@GetUser('email') email: string) {
+    console.log(email);
+    return this.LibraryService.clearHistory(email);
   }
 }

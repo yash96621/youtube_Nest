@@ -51,7 +51,7 @@ describe('App e2e', () => {
         return pactum
           .spec()
           .get('http://localhost:3333/auth/Refreshlogin')
-          .withHeaders({ Authorizatione: 'bearer $S{authToken}' })
+          .withHeaders({ Authorizatione: 'Bearer $S{authToken}' })
           .inspect();
       });
     });
@@ -67,12 +67,16 @@ describe('App e2e', () => {
         const dto: historyturn = {
           History_save: false,
         };
-
         return pactum
           .spec()
-          .post('http://localhost:3333/library/turnHistory')
-          .withHeaders({ Authorizatione: 'bearer $S{authToken}' })
+          .patch('http://localhost:3333/library/turnHistory')
           .withBody(dto)
+          .withHeaders({
+            Authorizatione: 'Bearer $S{authToken}',
+            accept: 'application/json',
+          })
+
+          .expectStatus(200)
           .inspect();
       });
     });
