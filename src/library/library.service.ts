@@ -38,6 +38,9 @@ export class LibraryService {
         data: {
           history: {},
         },
+        include: {
+          history: true,
+        },
       });
       console.log(user);
       return {
