@@ -31,7 +31,7 @@ model User {
 
 model Video {
   id               String     @id @default(auto()) @map("_id") @db.ObjectId
-  video_name       String
+  video_name       String     @unique
   description      String
   type             String[]
   video_link       String
