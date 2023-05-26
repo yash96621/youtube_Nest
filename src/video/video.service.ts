@@ -2,16 +2,21 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { S3 } from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
+import { videoup } from './dto/video.dto';
 
 @Injectable()
 export class VideoService {
   constructor(private prisma: PrismaService) {}
   async getvideo(videoId: number) {}
 
-  async uploadvideo(email, file) {
-    const { originalname } = file;
-    const bucketS3 = 'my-aws-bucket';
-    await this.uploadS3(file.buffer, bucketS3, originalname);
+  async uploadvideo(
+    files: Array<Express.Multer.File>,
+    dto: videoup,
+    email: String,
+  ) {
+    // const { originalname } = files;
+    // const bucketS3 = 'my-aws-bucket';
+    // await this.uploadS3(files.buffer, bucketS3, originalname);
   }
 
   async uploadS3(file, bucket, name) {
