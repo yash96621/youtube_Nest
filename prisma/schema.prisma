@@ -11,50 +11,53 @@ datasource db {
 }
 
 model User {
-  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
   name           String
   picture        String
-  email          String       @unique
-  History_save   Boolean      @default(true)
-  watchlist      Video[]      @relation("watchlist")
-  history        Video[]      @relation("history")
-  Uploaded_video Video[]      @relation("Uploaded_video")
-  Download_video Video[]      @relation("Download_video")
-  Comment_video  Video[]      @relation("Comment_video")
-  Liked_video    Video[]      @relation("Liked_video")
-  disLiked_video Video[]      @relation("disLiked_video")
-  notify_count   Int?         @default(0)
-  notification   Int?         @default(0)
-  createdAt      DateTime     @default(now())
-  Subscription   Subscriber[]
+  email          String   @unique
+  History_save   Boolean  @default(true)
+  notify_count   Int?     @default(0)
+  notification   Int?     @default(0)
+  createdAt      DateTime @default(now())
+  Uploaded_video Video[]  @relation("Uploaded_video")
+  // history        String[] @db.ObjectId
+
+  // historyId    String[]       @db.ObjectId
+  // history      Video[]      @relation("history", fields: [historyId], references: [id])
+  // Download_videoId String[]     @db.ObjectId
+  // Download_video   Video[]      @relation("Download_video", fields: [Download_videoId], references: [id])
+  // Comment_videoId  String[]     @db.ObjectId
+  // Comment_video    Video[]      @relation("Comment_video", fields: [Comment_videoId], references: [id])
+  // Liked_videoId    String[]     @db.ObjectId
+  // Liked_video      Video[]      @relation("Liked_video", fields: [Liked_videoId], references: [id])
+  // disLiked_videoId String[]     @db.ObjectId
+  // disLiked_video   Video[]      @relation("disLiked_video", fields: [disLiked_videoId], references: [id])
+
+  Subscription Subscriber[]
 }
 
 model Video {
-  id               String     @id @default(auto()) @map("_id") @db.ObjectId
-  video_name       String
-  description      String?
-  tag              String[]   @default(["video"])
-  video_link       String
-  thumbnail_link   String
-  createdAt        DateTime   @default(now())
-  views            Int        @default(0)
-  likes            Int        @default(0)
-  dislikes         Int        @default(0)
-  uploaded_By      String     @db.ObjectId
-  uploaded_video   User       @relation("Uploaded_video", fields: [uploaded_By], references: [id])
-  watchlistid      String?    @db.ObjectId
-  watchlist        User?      @relation("watchlist", fields: [watchlistid], references: [id])
-  historyId        String?    @db.ObjectId
-  history          User?      @relation("history", fields: [historyId], references: [id])
-  Download_videoId String?    @db.ObjectId
-  Download_video   User?      @relation("Download_video", fields: [Download_videoId], references: [id])
-  Comment_videoId  String?    @db.ObjectId
-  Comment_video    User?      @relation("Comment_video", fields: [Comment_videoId], references: [id])
-  Liked_videoId    String?    @db.ObjectId
-  Liked_video      User?      @relation("Liked_video", fields: [Liked_videoId], references: [id])
-  disLiked_videoId String?    @db.ObjectId
-  disLiked_video   User?      @relation("disLiked_video", fields: [disLiked_videoId], references: [id])
-  Comments         Comments[] @relation("Comments")
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  video_name     String
+  description    String?
+  tag            String[] @default(["video"])
+  video_link     String
+  thumbnail_link String
+  createdAt      DateTime @default(now())
+  views          Int      @default(0)
+  likes          Int      @default(0)
+  dislikes       Int      @default(0)
+  uploaded_By    String   @db.ObjectId
+  uploaded_video User     @relation("Uploaded_video", fields: [uploaded_By], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  // watchlist      User[]   @relation("watchlist")
+  // history        User[]   @relation("history")
+  // Download_video User[]   @relation("Download_video")
+  // Comment_video  User[]   @relation("Comment_video")
+  // Liked_video    User[]   @relation("Liked_video")
+  // disLiked_video User[]   @relation("disLiked_video")
+
+  Comments Comments[] @relation("Comments")
 }
 
 model Comments {
@@ -67,7 +70,7 @@ model Comments {
 }
 
 model Subscriber {
-  id     String  @id @default(auto()) @map("_id") @db.ObjectId
-  User   User?   @relation(fields: [userId], references: [id])
-  userId String? @db.ObjectId
+  id     String   @id @default(auto()) @map("_id") @db.ObjectId
+  User   User?    @relation(fields: [userId], references: [id])
+  userId String[] @db.ObjectId
 }

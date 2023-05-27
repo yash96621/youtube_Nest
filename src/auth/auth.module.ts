@@ -10,9 +10,9 @@ import { authmiddleware } from './middleware/auth.middleware';
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
 })
-export class AuthModule implements NestModule {    // implement middleware for auth
+export class AuthModule implements NestModule {
+  // implement middleware for auth
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(authmiddleware).forRoutes('auth/login')
+    consumer.apply(authmiddleware).forRoutes('auth/login');
   }
 }
- 

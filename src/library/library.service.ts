@@ -31,21 +31,21 @@ export class LibraryService {
 
   async clearHistory(email: string) {
     try {
-      const user = await this.prisma.user.update({
-        where: {
-          email: email,
-        },
-        data: {
-          history: {},
-        },
-        include: {
-          history: true,
-        },
-      });
-      console.log(user);
-      return {
-        Success: true,
-      };
+      // const user = await this.prisma.user.update({
+      //   where: {
+      //     email: email,
+      //   },
+      //   data: {
+      //     history: {},
+      //   },
+      //   include: {
+      //     history: true,
+      //   },
+      // });
+      // console.log(user);
+      // return {
+      //   Success: true,
+      // };
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();
