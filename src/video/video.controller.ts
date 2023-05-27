@@ -32,16 +32,28 @@ export class VideoController {
   getvideo(@Param('id', ParseIntPipe) videoid: number) {
     return this.VideoService.getvideo(videoid);
   }
+
   @UseGuards(JwtGuard)
-  @Post('videoUpload')
-  @UseInterceptors(FilesInterceptor('video'))
+  @Post('videoUpload') // we can also uses another method to do this same way
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'video', maxCount: 1 },
+      { name: 'thumbnail', maxCount: 1 },
+    ]),
+  )
   uploadvideo(
     @GetUser('email') email: string,
     @UploadedFiles()
-    files: Array<Express.Multer.File>,
+    files: { video: Express.Multer.File; thumbnail: Express.Multer.File },
     @Body() dto: videoup,
   ) {
-    return this.VideoService.uploadvideo(files, dto, email);
+    console.log(files, dto, email);
+    return this.VideoService.uploadvideo(
+      files.video,
+      files.thumbnail,
+      dto,
+      email,
+    );
   }
 }
 

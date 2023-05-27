@@ -31,17 +31,17 @@ model User {
 
 model Video {
   id               String     @id @default(auto()) @map("_id") @db.ObjectId
-  video_name       String     @unique
-  description      String
-  type             String[]
+  video_name       String
+  description      String?
+  tag              String[]   @default(["video"])
   video_link       String
   thumbnail_link   String
-  date             DateTime
+  createdAt        DateTime   @default(now())
   views            Int        @default(0)
   likes            Int        @default(0)
   dislikes         Int        @default(0)
-  uploaded_videoId String     @db.ObjectId
-  uploaded_video   User       @relation("Uploaded_video", fields: [uploaded_videoId], references: [id])
+  uploaded_By      String     @db.ObjectId
+  uploaded_video   User       @relation("Uploaded_video", fields: [uploaded_By], references: [id])
   watchlistid      String?    @db.ObjectId
   watchlist        User?      @relation("watchlist", fields: [watchlistid], references: [id])
   historyId        String?    @db.ObjectId

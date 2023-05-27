@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { S3 } from 'aws-sdk';
@@ -6,28 +7,52 @@ import { videoup } from './dto/video.dto';
 
 @Injectable()
 export class VideoService {
-  constructor(private prisma: PrismaService) {}
-  async getvideo(videoId: number) {}
-
-  async uploadvideo(
-    files: Array<Express.Multer.File>,
-    dto: videoup,
-    email: String,
-  ) {
-    // const { originalname } = files;
-    // const bucketS3 = 'my-aws-bucket';
-    // await this.uploadS3(files.buffer, bucketS3, originalname);
+  constructor(private prisma: PrismaService, private config: ConfigService) {}
+  async getvideo(videoId: number) {
+    return 'ok';
   }
 
-  async uploadS3(file, bucket, name) {
+  async uploadvideo(
+    video: Express.Multer.File,
+    thumbnail: Express.Multer.File,
+    dto: videoup,
+    email: string,
+  ) {
+    const vname = video[0].originalname;
+    const tname = thumbnail[0].originalname;
+    const tag = dto.tag.split(',');
+
+    const vresult = await this.uploadS3(video[0].buffer, vname);
+    const tresult = await this.uploadS3(thumbnail[0].buffer, tname);
+    console.log(tresult);
+    console.log(vresult);
+    const user = await this.prisma.user.update({
+      where: { email: email },
+      data: {
+        Uploaded_video: {
+          create: {
+            video_name: dto.name,
+            video_link: vresult.Key,
+            thumbnail_link: tresult.Key,
+            description: dto.des,
+            tag: tag,
+          },
+        },
+      },
+      include: { Uploaded_video: true },
+    });
+    return user;
+  }
+
+  async uploadS3(file, name: string): Promise<any> {
     const s3 = this.getS3();
     const params = {
-      Bucket: bucket,
+      Bucket: this.config.get('AWS_BUCKET_NAME'),
       Key: `${uuid()}-${name}`,
       Body: file,
     };
     return new Promise((resolve, reject) => {
-      s3.upload(params, (err, data) => {
+      s3.upload(params, (err: Error, data: object) => {
         if (err) {
           Logger.error(err);
           reject(err.message);
@@ -38,8 +63,8 @@ export class VideoService {
   }
   getS3() {
     return new S3({
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      accessKeyId: this.config.get('AWS_ACCESS_KEY_ID'),
+      secretAccessKey: this.config.get('AWS_SECRET_ACCESS_KEY'),
     });
   }
 }

@@ -6,8 +6,8 @@ export class videoup {
   name: string;
 
   @IsString()
-  des: String;
+  des: string;
 
   @IsString()
-  tag: String;
+  tag: string;
 }
