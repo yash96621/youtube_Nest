@@ -1,23 +1,14 @@
 import { videoup } from './dto/video.dto';
 import { VideoService } from './video.service';
-import {
-  FileFieldsInterceptor,
-  FileInterceptor,
-  FilesInterceptor,
-} from '@nestjs/platform-express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
 
 import {
   Body,
   Controller,
-  FileTypeValidator,
   Get,
-  MaxFileSizeValidator,
   Param,
-  ParseFilePipe,
-  ParseIntPipe,
   Post,
-  UploadedFile,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -28,9 +19,14 @@ import { JwtGuard } from 'src/auth/guard';
 @Controller('video')
 export class VideoController {
   constructor(private VideoService: VideoService) {}
-  @Get('video:id')
-  getvideo(@Param('id', ParseIntPipe) videoid: number) {
+  @Get('getplayingvideo/:id')
+  getvideo(@Param('id') videoid: string) {
     return this.VideoService.getvideo(videoid);
+  }
+
+  @Get('getmanyvideo')
+  getmanyvideo() {
+    return this.VideoService.getmanyvideo();
   }
 
   @UseGuards(JwtGuard)
