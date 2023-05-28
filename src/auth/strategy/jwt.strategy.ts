@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  UnauthorizedException,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -30,6 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       where: {
         email: payload.Useremail,
       },
+      include: { Uploaded_video: true },
     });
     console.log(user);
     return user;

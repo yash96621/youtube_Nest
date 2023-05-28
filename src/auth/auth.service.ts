@@ -1,12 +1,10 @@
-import { User } from '@prisma/client';
-import { BadRequestException } from '@nestjs/common';
 import { PrismaService } from './../prisma/prisma.service';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { userlogin } from './AuthDto';
-import { Request } from 'express';
+
 import { JwtService } from '@nestjs/jwt';
-import { randomUUID } from 'crypto';
+
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
@@ -24,6 +22,7 @@ export class AuthService {
         where: {
           email: dto.email,
         },
+        include: { Uploaded_video: true },
       });
       console.log('user', user);
 

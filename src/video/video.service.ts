@@ -37,8 +37,8 @@ export class VideoService {
           Uploaded_video: {
             create: {
               video_name: dto.name,
-              video_link: vresult.Key,
-              thumbnail_link: tresult.Key,
+              video_link: vresult.Location,
+              thumbnail_link: tresult.Location,
               description: dto.des,
               tag: tag,
             },
