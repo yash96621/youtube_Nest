@@ -8,7 +8,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { S3 } from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
 import { videoup } from './dto/video.dto';
-import { String } from 'aws-sdk/clients/appstream';
 
 @Injectable()
 export class VideoService {
@@ -35,9 +34,21 @@ export class VideoService {
   async getmanyvideo() {
     try {
       const videos = await this.prisma.video.findMany({
-        take: 10,
+        take: 30,
+        orderBy: {
+          createdAt: 'asc',
+        },
+        include: {
+          uploaded_video: {
+            select: {
+              picture: true,
+              name: true,
+            },
+          },
+        },
       });
-      console.log(videos);
+      console.log('videos many ahsdkashd asdkhasd uh', videos);
+      return videos;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();
