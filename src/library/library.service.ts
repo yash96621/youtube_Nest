@@ -1,7 +1,8 @@
+import { User } from '@prisma/client';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
-import { historyturn } from './dto';
+import { historyturn, savehistory } from './dto';
 
 @Injectable()
 export class LibraryService {
@@ -23,6 +24,27 @@ export class LibraryService {
       return {
         History_save: his,
       };
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async savehistory(email: string, dto: savehistory) {
+    try {
+      const user = await this.prisma.user.update({
+        where: { email: email },
+        data: {
+          History: {
+            connect: {
+              id: dto.VideoId,
+            },
+          },
+        },
+        include: { History: true },
+      });
+      console.log('user', user);
+      return user.History;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();

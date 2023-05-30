@@ -20,10 +20,8 @@ model User {
   notification   Int?     @default(0)
   createdAt      DateTime @default(now())
   Uploaded_video Video[]  @relation("Uploaded_video")
-  // history        String[] @db.ObjectId
+  History        Video[]  @relation("history")
 
-  // historyId    String[]       @db.ObjectId
-  // history      Video[]      @relation("history", fields: [historyId], references: [id])
   // Download_videoId String[]     @db.ObjectId
   // Download_video   Video[]      @relation("Download_video", fields: [Download_videoId], references: [id])
   // Comment_videoId  String[]     @db.ObjectId
@@ -49,9 +47,9 @@ model Video {
   dislikes       Int      @default(0)
   uploaded_By    String   @db.ObjectId
   uploaded_video User     @relation("Uploaded_video", fields: [uploaded_By], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
+  History        User?    @relation("history", fields: [History_By], references: [id])
+  History_By     String[] @db.ObjectId
   // watchlist      User[]   @relation("watchlist")
-  // history        User[]   @relation("history")
   // Download_video User[]   @relation("Download_video")
   // Comment_video  User[]   @relation("Comment_video")
   // Liked_video    User[]   @relation("Liked_video")

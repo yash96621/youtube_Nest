@@ -12,7 +12,7 @@ import {
 
 import { GetUser } from '../auth/decorator';
 
-import { historyturn } from './dto';
+import { historyturn, savehistory } from './dto';
 
 @UseGuards(JwtGuard)
 @Controller('library')
@@ -23,6 +23,11 @@ export class LibraryController {
   turnHistory(@GetUser('email') email: string, @Body() dto: historyturn) {
     console.log(email, dto);
     return this.LibraryService.turnHistory(email, dto);
+  }
+
+  @Patch('addhistory')
+  historysave(@GetUser('email') email: string, @Body() dto: savehistory) {
+    return this.LibraryService.savehistory(email, dto);
   }
 
   @Delete('clearHistory')
