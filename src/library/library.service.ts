@@ -32,8 +32,8 @@ export class LibraryService {
 
   async savehistory(email: string, dto: savehistory) {
     try {
-      const user = await this.prisma.user.update({
-        where: { email: email },
+      const user = await this.prisma.video.update({
+        where: { id: dto.VideoId },
         data: {
           History: {
             connect: {
