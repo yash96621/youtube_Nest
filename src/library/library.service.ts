@@ -32,8 +32,10 @@ export class LibraryService {
 
   async savehistory(email: string, dto: savehistory) {
     try {
-      const user = await this.prisma.video.update({
-        where: { id: dto.VideoId },
+      const user = await this.prisma.user.update({
+        where: {
+          email: email,
+        },
         data: {
           History: {
             connect: {
@@ -41,10 +43,13 @@ export class LibraryService {
             },
           },
         },
-        include: { History: true },
       });
-      console.log('user', user);
-      return user.History;
+      console.log('history', user);
+      const video = await this.prisma.video.update({
+        where: { id: dto.VideoId },
+        data: { views: { increment: 1 } },
+      });
+      return dto.VideoId;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();

@@ -24,6 +24,13 @@ export class VideoService {
           },
         },
       });
+
+      delete user.email;
+      delete user.HistoryIds;
+      delete user.History_save;
+      delete user.notification;
+      delete user.notify_count;
+
       return user;
     } catch (error) {
       console.log(error);

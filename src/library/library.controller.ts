@@ -25,7 +25,7 @@ export class LibraryController {
     return this.LibraryService.turnHistory(email, dto);
   }
 
-  @Patch('addhistory')
+  @Post('addhistory')
   historysave(@GetUser('email') email: string, @Body() dto: savehistory) {
     return this.LibraryService.savehistory(email, dto);
   }
