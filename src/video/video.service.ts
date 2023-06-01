@@ -16,20 +16,25 @@ export class VideoService {
   async getvideo(videoId: string) {
     try {
       const user = await this.prisma.user.findFirst({
-        include: {
+        select: {
+          name: true,
+          picture: true,
           Uploaded_video: {
             where: {
               id: videoId,
             },
+            select: {
+              id: true,
+              likes: true,
+              tag: true,
+              thumbnail_link: true,
+              video_link: true,
+              video_name: true,
+              views: true,
+            },
           },
         },
       });
-
-      delete user.email;
-      delete user.HistoryIds;
-      delete user.History_save;
-      delete user.notification;
-      delete user.notify_count;
 
       return user;
     } catch (error) {
@@ -45,7 +50,13 @@ export class VideoService {
         orderBy: {
           createdAt: 'asc',
         },
-        include: {
+        select: {
+          id: true,
+          likes: true,
+          tag: true,
+          thumbnail_link: true,
+          video_name: true,
+          views: true,
           uploaded_Info: {
             select: {
               picture: true,

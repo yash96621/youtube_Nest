@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PrismaService } from '../../prisma/prisma.service';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -22,12 +23,24 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     UserName: string;
     Userid: string;
   }): Promise<any> {
-    const user = await this.prisma.user.findUniqueOrThrow({
-      where: {
-        email: payload.Useremail,
-      },
-      include: { Uploaded_video: true },
-    });
+    const user: User =
+      null ||
+      (await this.prisma.user.findUniqueOrThrow({
+        where: {
+          email: payload.Useremail,
+        },
+        include: {
+          Uploaded_video: {
+            select: {
+              id: true,
+              thumbnail_link: true,
+              views: true,
+              likes: true,
+              video_name: true,
+            },
+          },
+        },
+      }));
     console.log(user);
     return user;
   }
