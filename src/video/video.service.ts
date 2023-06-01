@@ -46,7 +46,7 @@ export class VideoService {
           createdAt: 'asc',
         },
         include: {
-          uploaded_video: {
+          uploaded_Info: {
             select: {
               picture: true,
               name: true,

@@ -22,7 +22,7 @@ export class AuthService {
         where: {
           email: dto.email,
         },
-        include: { Uploaded_video: true },
+        include: { Uploaded_video: true, History: true },
       });
       console.log('user', user);
 
