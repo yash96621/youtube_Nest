@@ -31,6 +31,7 @@ export class VideoService {
               video_link: true,
               video_name: true,
               views: true,
+              createdAt: true,
             },
           },
         },
@@ -52,11 +53,11 @@ export class VideoService {
         },
         select: {
           id: true,
-          likes: true,
           tag: true,
           thumbnail_link: true,
           video_name: true,
           views: true,
+          createdAt: true,
           uploaded_Info: {
             select: {
               picture: true,

@@ -35,4 +35,9 @@ export class LibraryController {
     console.log(email);
     return this.LibraryService.clearHistory(email);
   }
+
+  @Post('addLiked')
+  AddLiked(@GetUser('email') email: string, @Body() dto: savehistory) {
+    return this.LibraryService.AddLikedVideo(email, dto);
+  }
 }

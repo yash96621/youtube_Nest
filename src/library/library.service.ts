@@ -1,4 +1,3 @@
-import { User } from '@prisma/client';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
@@ -70,6 +69,50 @@ export class LibraryService {
       return {
         Success: true,
       };
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async AddLikedVideo(email: string, dto: savehistory) {
+    try {
+      const user = await this.prisma.user.update({
+        where: {
+          email: email,
+        },
+        data: {
+          Liked_Videos: {
+            connect: {
+              id: dto.VideoId,
+            },
+          },
+        },
+      });
+      console.log(user);
+      return dto.VideoId;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async DeleteLikedVideo(email: string, dto: savehistory) {
+    try {
+      const user = await this.prisma.user.update({
+        where: {
+          email: email,
+        },
+        data: {
+          Liked_Videos: {
+            delete: {
+              id: dto.VideoId,
+            },
+          },
+        },
+      });
+      console.log(user);
+      return dto.VideoId;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();

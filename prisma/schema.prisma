@@ -24,43 +24,34 @@ model User {
   followedByIDs  String[] @db.ObjectId
   following      User[]   @relation("UserFollows", fields: [followingIDs], references: [id])
   followingIDs   String[] @db.ObjectId
-
-  // Download_videoId String[]     @db.ObjectId
-  // Download_video   Video[]      @relation("Download_video", fields: [Download_videoId], references: [id])
-  // Comment_videoId  String[]     @db.ObjectId
-  // Comment_video    Video[]      @relation("Comment_video", fields: [Comment_videoId], references: [id])
-  // Liked_videoId    String[]     @db.ObjectId
-  // Liked_video      Video[]      @relation("Liked_video", fields: [Liked_videoId], references: [id])
-  // disLiked_videoId String[]     @db.ObjectId
-  // disLiked_video   Video[]      @relation("disLiked_video", fields: [disLiked_videoId], references: [id])
-  // Subscription Subscriber[]
+  // watchlist      String[] @unique @db.ObjectId
+  // Liked_video    String[] @unique @db.ObjectId
+  // disLiked_video String[] @unique @db.ObjectId
+  LikedVideosIds String[] @unique @db.ObjectId
+  Liked_Videos   Video[]  @relation("Liked Videos", fields: [LikedVideosIds], references: [id])
 
   HistoryIds String[] @unique @db.ObjectId
   History    Video[]  @relation(fields: [HistoryIds], references: [id])
-  // History      History?
 }
 
 model Video {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  id             String     @id @default(auto()) @map("_id") @db.ObjectId
   video_name     String
   description    String?
-  tag            String[] @default(["video"])
+  tag            String[]   @default(["video"])
   video_link     String
   thumbnail_link String
-  createdAt      DateTime @default(now())
-  views          Int      @default(0)
-  likes          Int      @default(0)
-  dislikes       Int      @default(0)
-  uploader_id    String   @db.ObjectId
-  uploaded_Info  User     @relation("Uploaded_video", fields: [uploader_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  // watchlist      User[]   @relation("watchlist")
-  // Comment_video  User[]   @relation("Comment_video")
-  // Liked_video    User[]   @relation("Liked_video")
-  // disLiked_video User[]   @relation("disLiked_video")
-
-  HistoryIDs String[]   @unique @db.ObjectId
-  History    User[]     @relation(fields: [HistoryIDs], references: [id])
-  Comments   Comments[] @relation("Comments")
+  createdAt      DateTime   @default(now())
+  views          Int        @default(0)
+  likes          Int        @default(0)
+  dislikes       Int        @default(0)
+  uploader_id    String     @db.ObjectId
+  uploaded_Info  User       @relation("Uploaded_video", fields: [uploader_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  HistoryIDs     String[]   @unique @db.ObjectId
+  History        User[]     @relation(fields: [HistoryIDs], references: [id])
+  LikedIDs       String[]   @unique @db.ObjectId
+  Liked_Videos   User[]     @relation("Liked Videos", fields: [LikedIDs], references: [id])
+  Comments       Comments[] @relation("Comments")
 }
 
 model Comments {
