@@ -89,6 +89,14 @@ export class LibraryService {
           },
         },
       });
+      await this.prisma.video.update({
+        where: {
+          id: dto.VideoId,
+        },
+        data: {
+          likes: { increment: 1 },
+        },
+      });
       console.log(user);
       return dto.VideoId;
     } catch (error) {
@@ -113,6 +121,56 @@ export class LibraryService {
       });
       console.log(user);
       return dto.VideoId;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getlibrary(email: string) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          email: email,
+        },
+        select: {
+          History: {
+            select: {
+              createdAt: true,
+              id: true,
+              likes: true,
+              uploaded_Info: true,
+              thumbnail_link: true,
+              views: true,
+              video_name: true,
+            },
+          },
+          Liked_Videos: {
+            select: {
+              createdAt: true,
+              id: true,
+              likes: true,
+              uploaded_Info: true,
+              thumbnail_link: true,
+              views: true,
+              video_name: true,
+            },
+          },
+          Watchlist: {
+            select: {
+              createdAt: true,
+              id: true,
+              likes: true,
+              uploaded_Info: true,
+              thumbnail_link: true,
+              views: true,
+              video_name: true,
+            },
+          },
+        },
+      });
+      console.log('libraray this is' + user);
+      return user;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();

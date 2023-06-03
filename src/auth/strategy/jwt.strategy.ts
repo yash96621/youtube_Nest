@@ -30,6 +30,34 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
           email: payload.Useremail,
         },
         include: {
+          History: {
+            select: {
+              id: true,
+              thumbnail_link: true,
+              views: true,
+              video_name: true,
+              createdAt: true,
+              uploaded_Info: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+          Liked_Videos: {
+            select: {
+              id: true,
+              thumbnail_link: true,
+              views: true,
+              video_name: true,
+              createdAt: true,
+              uploaded_Info: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
           Uploaded_video: {
             select: {
               id: true,
