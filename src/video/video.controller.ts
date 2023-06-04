@@ -30,6 +30,13 @@ export class VideoController {
   }
 
   @UseGuards(JwtGuard)
+  @Get('getuploadedvideos')
+  getuploadedvideo(@GetUser('email') email: string) {
+    console.log('user with uploaded videos', email);
+    return this.VideoService.getuploadedvideo(email);
+  }
+
+  @UseGuards(JwtGuard)
   @Post('videoUpload') // we can also uses another method to do this same way
   @UseInterceptors(
     FileFieldsInterceptor([

@@ -8,6 +8,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { S3 } from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
 import { videoup } from './dto/video.dto';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class VideoService {
@@ -44,13 +45,34 @@ export class VideoService {
     }
   }
 
+  async getuploadedvideo(email: string) {
+    try {
+      const user = await this.prisma.user.findUniqueOrThrow({
+        where: { email: email },
+        select: {
+          Uploaded_video: {
+            select: {
+              id: true,
+              video_name: true,
+              createdAt: true,
+              thumbnail_link: true,
+              views: true,
+            },
+          },
+        },
+      });
+      console.log('uploadeed videos', user);
+      return user;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
   async getmanyvideo() {
     try {
       const videos = await this.prisma.video.findMany({
         take: 30,
-        orderBy: {
-          createdAt: 'asc',
-        },
         select: {
           id: true,
           tag: true,

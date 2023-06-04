@@ -156,17 +156,7 @@ export class LibraryService {
               video_name: true,
             },
           },
-          Watchlist: {
-            select: {
-              createdAt: true,
-              id: true,
-              likes: true,
-              uploaded_Info: true,
-              thumbnail_link: true,
-              views: true,
-              video_name: true,
-            },
-          },
+          Watchlist: true,
         },
       });
       console.log('libraray this is' + user);
