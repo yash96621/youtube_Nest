@@ -105,6 +105,32 @@ export class LibraryService {
     }
   }
 
+  async AdddisLikedVideo(email: string, dto: savehistory) {
+    try {
+      const user = await this.prisma.user.update({
+        where: {
+          email: email,
+        },
+        data: {
+          dislike_VideosIds: { push: dto.VideoId },
+        },
+      });
+      await this.prisma.video.update({
+        where: {
+          id: dto.VideoId,
+        },
+        data: {
+          dislikes: { increment: 1 },
+        },
+      });
+      console.log(user);
+      return dto.VideoId;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
   async DeleteLikedVideo(email: string, dto: savehistory) {
     try {
       const user = await this.prisma.user.update({

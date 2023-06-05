@@ -45,4 +45,9 @@ export class LibraryController {
   getlibrary(@GetUser('email') email: string) {
     return this.LibraryService.getlibrary(email);
   }
+
+  @Post('adddisLiked')
+  AdddisLiked(@GetUser('email') email: string, @Body() dto: savehistory) {
+    return this.LibraryService.AdddisLikedVideo(email, dto);
+  }
 }
