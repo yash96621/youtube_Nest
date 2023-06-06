@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString, isNotEmpty } from 'class-validator';
 
 export class videoup {
   @IsNotEmpty()
@@ -10,4 +10,10 @@ export class videoup {
 
   @IsString()
   tag: string;
+}
+
+export class suggestion {
+  @IsArray()
+  @IsNotEmpty()
+  tag: Array<string>;
 }

@@ -182,6 +182,7 @@ export class LibraryService {
               video_name: true,
             },
           },
+          dislike_VideosIds: true,
           Watchlist: true,
         },
       });

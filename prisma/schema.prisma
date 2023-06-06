@@ -37,6 +37,7 @@ model Video {
   video_name     String
   description    String?
   tag            String[]   @default(["video"])
+  Search_key     String[]
   video_link     String
   thumbnail_link String
   createdAt      DateTime   @default(now())

@@ -7,7 +7,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { S3 } from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
-import { videoup } from './dto/video.dto';
+import { suggestion, videoup } from './dto/video.dto';
 import { User } from '@prisma/client';
 
 @Injectable()
@@ -89,6 +89,47 @@ export class VideoService {
         },
       });
       console.log('videos many ahsdkashd asdkhasd uh', videos);
+      return videos;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getsuggestionvideo(dto: suggestion) {
+    try {
+      console.log('tags', dto.tag);
+      const videos = await this.prisma.video.findMany({
+        take: 20,
+        where: {
+          tag: {
+            hasSome: dto.tag,
+          },
+          AND: {
+            NOT: [
+              {
+                tag: {
+                  hasEvery: dto.tag,
+                },
+              },
+            ],
+          },
+        },
+        select: {
+          id: true,
+          thumbnail_link: true,
+          video_name: true,
+          views: true,
+          createdAt: true,
+          uploaded_Info: {
+            select: {
+              picture: true,
+              name: true,
+            },
+          },
+        },
+      });
+      console.log('suggested Video', videos);
       return videos;
     } catch (error) {
       console.log(error);
