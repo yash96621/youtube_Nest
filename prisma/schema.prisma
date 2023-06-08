@@ -36,7 +36,7 @@ model Video {
   id             String     @id @default(auto()) @map("_id") @db.ObjectId
   video_name     String
   description    String?
-  tag            String[]   @default(["video"])
+  Categorys      String[]
   Search_key     String[]
   video_link     String
   thumbnail_link String
