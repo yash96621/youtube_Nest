@@ -16,29 +16,50 @@ export class VideoService {
 
   async getvideo(videoId: string) {
     try {
-      const user = await this.prisma.user.findFirst({
+      console.log(videoId);
+      const video = await this.prisma.video.findUnique({
+        where: {
+          id: videoId,
+        },
         select: {
-          name: true,
-          picture: true,
-          Uploaded_video: {
-            where: {
-              id: videoId,
-            },
+          id: true,
+          likes: true,
+          Categorys: true,
+          thumbnail_link: true,
+          video_link: true,
+          video_name: true,
+          views: true,
+          createdAt: true,
+          uploaded_Info: {
             select: {
-              id: true,
-              likes: true,
-              tag: true,
-              thumbnail_link: true,
-              video_link: true,
-              video_name: true,
-              views: true,
-              createdAt: true,
+              name: true,
+              picture: true,
             },
           },
         },
-      });
 
-      return user;
+        // select: {
+        //   name: true,
+        //   picture: true,
+        //   Uploaded_video: {
+        //     where: {
+        //       id: videoId,
+        //     },
+        //     select: {
+        //       id: true,
+        //       likes: true,
+        //       Categorys: true,
+        //       thumbnail_link: true,
+        //       video_link: true,
+        //       video_name: true,
+        //       views: true,
+        //       createdAt: true,
+        //     },
+        //   },
+        // },
+      });
+      console.log('get play video', video);
+      return video;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();
@@ -47,7 +68,7 @@ export class VideoService {
 
   async getuploadedvideo(email: string) {
     try {
-      const user = await this.prisma.user.findUniqueOrThrow({
+      const user = await this.prisma.user.findUnique({
         where: { email: email },
         select: {
           Uploaded_video: {
@@ -75,7 +96,7 @@ export class VideoService {
         take: 30,
         select: {
           id: true,
-          tag: true,
+          Categorys: true,
           thumbnail_link: true,
           video_name: true,
           views: true,
@@ -102,13 +123,13 @@ export class VideoService {
       const videos = await this.prisma.video.findMany({
         take: 20,
         where: {
-          tag: {
+          Categorys: {
             hasSome: dto.tag,
           },
           AND: {
             NOT: [
               {
-                tag: {
+                Categorys: {
                   hasEvery: dto.tag,
                 },
               },
@@ -146,7 +167,7 @@ export class VideoService {
     try {
       const vname = video[0].originalname;
       const tname = thumbnail[0].originalname;
-      const tag = dto.tag.split(',');
+      const cat = dto.cat;
 
       const vresult = await this.uploadS3(video[0].buffer, vname);
       const tresult = await this.uploadS3(thumbnail[0].buffer, tname);
@@ -161,7 +182,7 @@ export class VideoService {
               video_link: vresult.Location,
               thumbnail_link: tresult.Location,
               description: dto.des,
-              tag: tag,
+              Categorys: cat,
             },
           },
         },

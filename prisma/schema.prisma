@@ -18,6 +18,7 @@ model User {
   History_save      Boolean  @default(true)
   notify_count      Int?     @default(0)
   notification      Int?     @default(0)
+  Notification_info String[] @db.ObjectId
   createdAt         DateTime @default(now())
   Uploaded_video    Video[]  @relation("Uploaded_video")
   followedBy        User[]   @relation("UserFollows", fields: [followedByIDs], references: [id])

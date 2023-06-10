@@ -9,7 +9,7 @@ export class videoup {
   des: string;
 
   @IsString()
-  tag: string;
+  cat: string;
 }
 
 export class suggestion {

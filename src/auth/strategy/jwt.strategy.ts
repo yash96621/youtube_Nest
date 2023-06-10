@@ -23,24 +23,22 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     UserName: string;
     Userid: string;
   }): Promise<any> {
-    const user =
-      null ||
-      (await this.prisma.user.findUniqueOrThrow({
-        where: {
-          email: payload.Useremail,
-        },
-        select: {
-          HistoryIds: true,
-          LikedVideosIds: true,
-          id: true,
-          email: true,
-          History_save: true,
-          name: true,
-          notification: true,
-          notify_count: true,
-          picture: true,
-        },
-      }));
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: payload.Useremail,
+      },
+      select: {
+        HistoryIds: true,
+        LikedVideosIds: true,
+        id: true,
+        email: true,
+        History_save: true,
+        name: true,
+        notification: true,
+        notify_count: true,
+        picture: true,
+      },
+    });
     console.log(user);
     return user;
   }
