@@ -119,19 +119,17 @@ export class VideoService {
 
   async getsuggestionvideo(dto: suggestion) {
     try {
-      console.log('tags', dto.tag);
+      console.log('tags', dto.Categorys);
       const videos = await this.prisma.video.findMany({
         take: 20,
         where: {
           Categorys: {
-            hasSome: dto.tag,
+            hasSome: dto.Categorys,
           },
           AND: {
             NOT: [
               {
-                Categorys: {
-                  hasEvery: dto.tag,
-                },
+                id: dto.videoId,
               },
             ],
           },
