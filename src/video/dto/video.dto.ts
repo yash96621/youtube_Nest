@@ -10,6 +10,8 @@ export class videoup {
 
   @IsString()
   cat: string;
+
+  key: any;
 }
 
 export class suggestion {

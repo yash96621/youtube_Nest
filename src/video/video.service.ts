@@ -168,6 +168,7 @@ export class VideoService {
       const vname = video[0].originalname;
       const tname = thumbnail[0].originalname;
       const cat = dto.cat;
+      const key = dto.key;
 
       const vresult = await this.uploadS3(video[0].buffer, vname);
       const tresult = await this.uploadS3(thumbnail[0].buffer, tname);
@@ -183,10 +184,21 @@ export class VideoService {
               thumbnail_link: tresult.Location,
               description: dto.des,
               Categorys: cat,
+              Search_key: key,
             },
           },
         },
-        include: { Uploaded_video: true },
+        select: {
+          Uploaded_video: {
+            select: {
+              video_name: true,
+              thumbnail_link: true,
+              views: true,
+              likes: true,
+              createdAt: true,
+            },
+          },
+        },
       });
       console.log(user);
       return user;
