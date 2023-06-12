@@ -7,7 +7,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { S3 } from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
-import { suggestion, videoup } from './dto/video.dto';
+import { search, suggestion, videoup } from './dto/video.dto';
 import { User } from '@prisma/client';
 
 @Injectable()
@@ -37,26 +37,6 @@ export class VideoService {
             },
           },
         },
-
-        // select: {
-        //   name: true,
-        //   picture: true,
-        //   Uploaded_video: {
-        //     where: {
-        //       id: videoId,
-        //     },
-        //     select: {
-        //       id: true,
-        //       likes: true,
-        //       Categorys: true,
-        //       thumbnail_link: true,
-        //       video_link: true,
-        //       video_name: true,
-        //       views: true,
-        //       createdAt: true,
-        //     },
-        //   },
-        // },
       });
       console.log('get play video', video);
       return video;
@@ -84,6 +64,27 @@ export class VideoService {
       });
       console.log('uploadeed videos', user);
       return user;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async Searching(dto: search) {
+    try {
+      console.log(dto.texts);
+      const result = await this.prisma.video.findMany({
+        where: {
+          Search_key: {
+            hasSome: dto.texts,
+          },
+        },
+        select: {
+          video_name: true,
+        },
+      });
+      console.log('search result', result);
+      return result;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();
@@ -165,13 +166,14 @@ export class VideoService {
     try {
       const vname = video[0].originalname;
       const tname = thumbnail[0].originalname;
-      const cat = dto.cat;
-      const key = dto.key;
+      const cat = await dto.cat.split(',');
+      const key = await dto.searchkey.split(',');
 
       const vresult = await this.uploadS3(video[0].buffer, vname);
       const tresult = await this.uploadS3(thumbnail[0].buffer, tname);
       console.log(tresult);
       console.log(vresult);
+      console.log('keys', key);
       const user = await this.prisma.user.update({
         where: { email: email },
         data: {
@@ -188,11 +190,14 @@ export class VideoService {
         },
         select: {
           Uploaded_video: {
+            where: {
+              video_name: dto.name,
+            },
             select: {
+              id: true,
               video_name: true,
               thumbnail_link: true,
               views: true,
-              likes: true,
               createdAt: true,
             },
           },

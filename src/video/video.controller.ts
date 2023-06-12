@@ -1,4 +1,4 @@
-import { suggestion, videoup } from './dto/video.dto';
+import { search, suggestion, videoup } from './dto/video.dto';
 import { VideoService } from './video.service';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
@@ -27,6 +27,11 @@ export class VideoController {
   @Get('getmanyvideo')
   getmanyvideo() {
     return this.VideoService.getmanyvideo();
+  }
+
+  @Post('Searching')
+  Searching(@Body() dto: search) {
+    return this.VideoService.Searching(dto);
   }
 
   @Post('SuggestionVideo')
