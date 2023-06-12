@@ -6,7 +6,6 @@ import { ConfigModule } from '@nestjs/config';
 import { VideoModule } from './video/video.module';
 import { LibraryModule } from './library/library.module';
 import { SubscriptionModule } from './subscription/subscription.module';
-import { SuggestionsModule } from './suggestions/suggestions.module';
 
 @Module({
   imports: [
@@ -19,7 +18,6 @@ import { SuggestionsModule } from './suggestions/suggestions.module';
     VideoModule,
     LibraryModule,
     SubscriptionModule,
-    SuggestionsModule,
   ],
   controllers: [],
   providers: [],

@@ -21,10 +21,11 @@ model User {
   Notification_info String[] @db.ObjectId
   createdAt         DateTime @default(now())
   Uploaded_video    Video[]  @relation("Uploaded_video")
-  followedBy        User[]   @relation("UserFollows", fields: [followedByIDs], references: [id])
-  followedByIDs     String[] @unique @db.ObjectId
-  following         User[]   @relation("UserFollows", fields: [followingIDs], references: [id])
-  followingIDs      String[] @unique @db.ObjectId
+  Subscriber        Int?     @default(0)
+  Subscribe         User[]   @relation("Subscribe", fields: [SubscribeIDs], references: [id])
+  SubscribeIDs      String[] @unique @db.ObjectId
+  SubscribeBy       User[]   @relation("Subscribe", fields: [SubscribeByIDs], references: [id])
+  SubscribeByIDs    String[] @unique @db.ObjectId
   dislike_VideosIds String[] @unique @db.ObjectId
   LikedVideosIds    String[] @unique @db.ObjectId
   Liked_Videos      Video[]  @relation("Liked Videos", fields: [LikedVideosIds], references: [id])
