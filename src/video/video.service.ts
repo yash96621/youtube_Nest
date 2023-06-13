@@ -32,6 +32,7 @@ export class VideoService {
           createdAt: true,
           uploaded_Info: {
             select: {
+              id: true,
               name: true,
               picture: true,
             },

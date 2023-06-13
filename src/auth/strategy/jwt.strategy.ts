@@ -37,6 +37,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         notification: true,
         notify_count: true,
         picture: true,
+        SubscribeIDs: true,
+        Subscriber: true,
       },
     });
     console.log(user);

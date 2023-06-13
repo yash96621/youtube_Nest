@@ -1,4 +1,4 @@
-import { search, suggestion, videoup } from './dto/video.dto';
+import { search, suggestion, videoup } from './dto';
 import { VideoService } from './video.service';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';

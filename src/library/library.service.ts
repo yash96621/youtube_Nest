@@ -139,7 +139,7 @@ export class LibraryService {
         },
         data: {
           Liked_Videos: {
-            delete: {
+            deleteMany: {
               id: dto.VideoId,
             },
           },

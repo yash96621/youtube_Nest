@@ -16,12 +16,12 @@ model User {
   picture           String
   email             String   @unique
   History_save      Boolean  @default(true)
-  notify_count      Int?     @default(0)
-  notification      Int?     @default(0)
+  notify_count      Int      @default(0)
+  notification      Int      @default(0)
+  Subscriber        Int      @default(0)
   Notification_info String[] @db.ObjectId
   createdAt         DateTime @default(now())
   Uploaded_video    Video[]  @relation("Uploaded_video")
-  Subscriber        Int?     @default(0)
   Subscribe         User[]   @relation("Subscribe", fields: [SubscribeIDs], references: [id])
   SubscribeIDs      String[] @unique @db.ObjectId
   SubscribeBy       User[]   @relation("Subscribe", fields: [SubscribeByIDs], references: [id])
