@@ -56,6 +56,7 @@ export class VideoController {
   )
   uploadvideo(
     @GetUser('email') email: string,
+    @GetUser('id') id: string,
     @UploadedFiles()
     files: { video: Express.Multer.File; thumbnail: Express.Multer.File },
     @Body() dto: videoup,
@@ -66,6 +67,7 @@ export class VideoController {
       files.thumbnail,
       dto,
       email,
+      id,
     );
   }
 }

@@ -163,6 +163,7 @@ export class VideoService {
     thumbnail: Express.Multer.File,
     dto: videoup,
     email: string,
+    id: string,
   ) {
     try {
       const vname = video[0].originalname;
@@ -202,6 +203,34 @@ export class VideoService {
               createdAt: true,
             },
           },
+        },
+      });
+
+      await this.prisma.user.update({
+        where: {
+          email: email,
+        },
+        data: {
+          SubscribeBy: {
+            updateMany: {
+              where: {
+                SubscribeIDs: {
+                  has: id,
+                },
+              },
+              data: {
+                Notification_info: {
+                  push: user.Uploaded_video[0].id,
+                },
+                notify_count: {
+                  increment: 1,
+                },
+              },
+            },
+          },
+        },
+        select: {
+          Notification_info: true,
         },
       });
 
