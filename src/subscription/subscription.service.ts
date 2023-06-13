@@ -35,7 +35,19 @@ export class SubscriptionService {
   async getsubscsubscribechannelribe(email: string, dto: subschannel) {
     try {
       if (dto.sub) {
-        const subscribe = await this.prisma.user.update({
+        const sub = await this.prisma.user.update({
+          where: {
+            id: dto.ChannelId,
+          },
+          data: {
+            Subscriber: { increment: 1 },
+          },
+          select: {
+            Subscriber: true,
+          },
+        });
+        console.log('subscribe', sub);
+        await this.prisma.user.update({
           where: {
             email: email,
           },
@@ -46,18 +58,14 @@ export class SubscriptionService {
               },
             },
           },
-        });
-        await this.prisma.user.update({
-          where: {
-            id: dto.ChannelId,
-          },
-          data: {
-            Subscriber: { increment: 1 },
+          select: {
+            id: true,
           },
         });
+
         return dto.ChannelId;
       } else {
-        const subscribe = await this.prisma.user.update({
+        await this.prisma.user.update({
           where: {
             email: email,
           },
@@ -68,16 +76,24 @@ export class SubscriptionService {
               },
             },
           },
+          select: {
+            id: true,
+          },
         });
 
-        await this.prisma.user.update({
+        const unsub = await this.prisma.user.update({
           where: {
             id: dto.ChannelId,
           },
           data: {
             Subscriber: { decrement: 1 },
           },
+          select: {
+            Subscriber: true,
+          },
         });
+
+        console.log('unsubscribe', unsub);
         return dto.ChannelId;
       }
     } catch (error) {
