@@ -35,6 +35,7 @@ export class VideoService {
               id: true,
               name: true,
               picture: true,
+              Subscriber: true,
             },
           },
         },
