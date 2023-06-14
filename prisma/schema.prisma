@@ -19,7 +19,7 @@ model User {
   notify_count      Int      @default(0)
   notification      Int      @default(0)
   Subscriber        Int      @default(0)
-  Notification_info String[] @db.ObjectId
+  Notification_info String[]
   createdAt         DateTime @default(now())
   Uploaded_video    Video[]  @relation("Uploaded_video")
   Subscribe         User[]   @relation("Subscribe", fields: [SubscribeIDs], references: [id])

@@ -101,4 +101,45 @@ export class SubscriptionService {
       throw new InternalServerErrorException();
     }
   }
+
+  async getnotification(email: string, num: number) {
+    try {
+      const notification = await this.prisma.user.findFirst({
+        where: {
+          email: email,
+        },
+        select: {
+          Notification_info: true,
+        },
+        take: -20,
+      });
+
+      const notifications = await this.prisma.video.findMany({
+        where: {
+          id: {
+            in: notification.Notification_info,
+          },
+        },
+        select: {
+          video_name: true,
+          thumbnail_link: true,
+          uploaded_Info: {
+            select: {
+              name: true,
+              id: true,
+              picture: true,
+            },
+          },
+          id: true,
+          createdAt: true,
+        },
+      });
+      console.log(notification);
+      console.log('notifications', notifications);
+      return notifications;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
 }

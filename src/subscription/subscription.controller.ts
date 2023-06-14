@@ -30,4 +30,9 @@ export class SubscriptionController {
     console.log(email, 'email id');
     return this.sub.getsubscsubscribechannelribe(email, dto);
   }
+
+  @Get('getnotification/:num')
+  getnotification(@GetUser('email') email: string, @Param('num') num: number) {
+    return this.sub.getnotification(email, num);
+  }
 }
