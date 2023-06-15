@@ -35,4 +35,10 @@ export class SubscriptionController {
   getnotification(@GetUser('email') email: string, @Param('num') num: number) {
     return this.sub.getnotification(email, num);
   }
+
+  @Get('setnoticount/:num')
+  setnoticount(@GetUser('email') email: string, @Param('num') num: number) {
+    console.log('noticount is done');
+    return this.sub.setnoticount(email, num);
+  }
 }

@@ -142,4 +142,25 @@ export class SubscriptionService {
       throw new InternalServerErrorException();
     }
   }
+
+  async setnoticount(email: string, num: number) {
+    try {
+      num = Number(num);
+      await this.prisma.user.update({
+        where: {
+          email: email,
+        },
+        data: {
+          notification: num,
+        },
+        select: {
+          notification: true,
+        },
+      });
+      return num;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
 }
