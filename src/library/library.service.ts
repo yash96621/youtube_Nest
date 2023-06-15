@@ -159,6 +159,7 @@ export class LibraryService {
         where: {
           email: email,
         },
+
         select: {
           History: {
             select: {

@@ -83,9 +83,10 @@ export class VideoService {
         },
         select: {
           video_name: true,
+          id: true,
         },
+        take: 15,
       });
-      console.log('search result', result);
       return result;
     } catch (error) {
       console.log(error);
