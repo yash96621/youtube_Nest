@@ -54,6 +54,9 @@ export class VideoService {
         where: { email: email },
         select: {
           Uploaded_video: {
+            orderBy: {
+              createdAt: 'desc',
+            },
             select: {
               id: true,
               video_name: true,
