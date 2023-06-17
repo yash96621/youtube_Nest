@@ -162,9 +162,6 @@ export class LibraryService {
 
         select: {
           History: {
-            orderBy: {
-              createdAt: 'desc',
-            },
             select: {
               createdAt: true,
               id: true,
@@ -176,9 +173,6 @@ export class LibraryService {
             },
           },
           Liked_Videos: {
-            orderBy: {
-              createdAt: 'desc',
-            },
             select: {
               createdAt: true,
               id: true,
