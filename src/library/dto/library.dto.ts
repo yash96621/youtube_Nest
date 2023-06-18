@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString, isBoolean } from 'class-validator';
 
 export class historyturn {
   @IsNotEmpty()
@@ -10,4 +10,14 @@ export class savehistory {
   @IsNotEmpty()
   @IsString()
   VideoId: string;
+}
+
+export class dislike {
+  @IsNotEmpty()
+  @IsString()
+  VideoId: string;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  operation: boolean;
 }

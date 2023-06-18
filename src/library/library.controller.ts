@@ -12,7 +12,7 @@ import {
 
 import { GetUser } from '../auth/decorator';
 
-import { historyturn, savehistory } from './dto';
+import { dislike, historyturn, savehistory } from './dto';
 
 @UseGuards(JwtGuard)
 @Controller('library')
@@ -37,7 +37,7 @@ export class LibraryController {
   }
 
   @Post('addLiked')
-  AddLiked(@GetUser('email') email: string, @Body() dto: savehistory) {
+  AddLiked(@GetUser('email') email: string, @Body() dto: dislike) {
     return this.LibraryService.AddLikedVideo(email, dto);
   }
 
@@ -47,7 +47,7 @@ export class LibraryController {
   }
 
   @Post('adddisLiked')
-  AdddisLiked(@GetUser('email') email: string, @Body() dto: savehistory) {
+  AdddisLiked(@GetUser('email') email: string, @Body() dto: dislike) {
     return this.LibraryService.AdddisLikedVideo(email, dto);
   }
 }

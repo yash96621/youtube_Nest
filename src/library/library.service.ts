@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
-import { historyturn, savehistory } from './dto';
+import { dislike, historyturn, savehistory } from './dto';
 
 @Injectable()
 export class LibraryService {
@@ -18,8 +18,11 @@ export class LibraryService {
         data: {
           History_save: his,
         },
+        select: {
+          id: true,
+        },
       });
-      console.log(user);
+      console.log('turj history', user);
       return {
         History_save: his,
       };
@@ -42,11 +45,17 @@ export class LibraryService {
             },
           },
         },
+        select: {
+          id: true,
+        },
       });
-      console.log('history', user);
+
       const video = await this.prisma.video.update({
         where: { id: dto.VideoId },
         data: { views: { increment: 1 } },
+        select: {
+          id: true,
+        },
       });
       return dto.VideoId;
     } catch (error) {
@@ -64,8 +73,11 @@ export class LibraryService {
         data: {
           HistoryIds: [],
         },
+        select: {
+          id: true,
+        },
       });
-      console.log(user);
+
       return {
         Success: true,
       };
@@ -75,29 +87,62 @@ export class LibraryService {
     }
   }
 
-  async AddLikedVideo(email: string, dto: savehistory) {
+  async AddLikedVideo(email: string, dto: dislike) {
     try {
-      const user = await this.prisma.user.update({
-        where: {
-          email: email,
-        },
-        data: {
-          Liked_Videos: {
-            connect: {
-              id: dto.VideoId,
+      if (dto.operation) {
+        const user = await this.prisma.user.update({
+          where: {
+            email: email,
+          },
+          data: {
+            Liked_Videos: {
+              connect: {
+                id: dto.VideoId,
+              },
             },
           },
-        },
-      });
-      await this.prisma.video.update({
-        where: {
-          id: dto.VideoId,
-        },
-        data: {
-          likes: { increment: 1 },
-        },
-      });
-      console.log(user);
+        });
+        await this.prisma.video.update({
+          where: {
+            id: dto.VideoId,
+          },
+          data: {
+            likes: { increment: 1 },
+          },
+          select: {
+            id: true,
+          },
+        });
+      } else {
+        const user = await this.prisma.user.update({
+          where: {
+            email: email,
+          },
+          data: {
+            Liked_Videos: {
+              delete: {
+                id: dto.VideoId,
+              },
+            },
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        await this.prisma.video.update({
+          where: {
+            id: dto.VideoId,
+          },
+          data: {
+            likes: { decrement: 1 },
+          },
+          select: {
+            id: true,
+          },
+        });
+      }
+
       return dto.VideoId;
     } catch (error) {
       console.log(error);
@@ -105,47 +150,63 @@ export class LibraryService {
     }
   }
 
-  async AdddisLikedVideo(email: string, dto: savehistory) {
+  async AdddisLikedVideo(email: string, dto: dislike) {
     try {
-      const user = await this.prisma.user.update({
-        where: {
-          email: email,
-        },
-        data: {
-          dislike_VideosIds: { push: dto.VideoId },
-        },
-      });
-      await this.prisma.video.update({
-        where: {
-          id: dto.VideoId,
-        },
-        data: {
-          dislikes: { increment: 1 },
-        },
-      });
-      console.log(user);
-      return dto.VideoId;
-    } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException();
-    }
-  }
-
-  async DeleteLikedVideo(email: string, dto: savehistory) {
-    try {
-      const user = await this.prisma.user.update({
-        where: {
-          email: email,
-        },
-        data: {
-          Liked_Videos: {
-            deleteMany: {
-              id: dto.VideoId,
+      if (dto.operation) {
+        const user = await this.prisma.user.update({
+          where: {
+            email: email,
+          },
+          data: {
+            dislike_VideosIds: { push: dto.VideoId },
+          },
+        });
+        await this.prisma.video.update({
+          where: {
+            id: dto.VideoId,
+          },
+          data: {
+            dislikes: { increment: 1 },
+          },
+          select: {
+            id: true,
+          },
+        });
+        console.log(user);
+      } else {
+        const { dislike_VideosIds } = await this.prisma.user.findUnique({
+          where: {
+            email: email,
+          },
+          select: {
+            dislike_VideosIds: true,
+          },
+        });
+        await this.prisma.user.update({
+          where: {
+            email: email,
+          },
+          data: {
+            dislike_VideosIds: {
+              set: dislike_VideosIds.filter((id) => id !== dto.VideoId),
             },
           },
-        },
-      });
-      console.log(user);
+          select: {
+            id: true,
+          },
+        });
+        await this.prisma.video.update({
+          where: {
+            id: dto.VideoId,
+          },
+          data: {
+            dislikes: { decrement: 1 },
+          },
+          select: {
+            id: true,
+          },
+        });
+      }
       return dto.VideoId;
     } catch (error) {
       console.log(error);
