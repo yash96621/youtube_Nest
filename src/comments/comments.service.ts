@@ -24,9 +24,19 @@ export class CommentsService {
         },
         select: {
           id: true,
+          createdAt: true,
+          message: true,
+          User: {
+            select: {
+              picture: true,
+              name: true,
+              id: true,
+            },
+          },
         },
       });
-      return 'ok';
+      console.log('comment added in backend', comment);
+      return comment;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();
@@ -40,8 +50,10 @@ export class CommentsService {
           id: videoid,
         },
         select: {
+          id: true,
           Comments: {
             select: {
+              createdAt: true,
               message: true,
               User: {
                 select: {
@@ -52,10 +64,9 @@ export class CommentsService {
               },
             },
           },
-
-          createdAt: true,
         },
       });
+      console.log('comments', comment);
       return comment;
     } catch (error) {
       console.log(error);

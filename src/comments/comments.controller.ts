@@ -30,6 +30,7 @@ export class CommentsController {
 
   @Get('getcommentofvideo/:id')
   getcommetnsvideo(@Param('id') videoid: string) {
+    console.log('Comment is comming');
     return this.CommentsService.getcommetnsvideo(videoid);
   }
 }
