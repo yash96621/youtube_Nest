@@ -90,38 +90,15 @@ export class LibraryService {
   async AddLikedVideo(email: string, dto: dislike) {
     try {
       if (dto.operation) {
-        const user = await this.prisma.user.update({
-          where: {
-            email: email,
-          },
-          data: {
-            Liked_Videos: {
-              connect: {
-                id: dto.VideoId,
-              },
-            },
-          },
-        });
         await this.prisma.video.update({
           where: {
             id: dto.VideoId,
           },
           data: {
             likes: { increment: 1 },
-          },
-          select: {
-            id: true,
-          },
-        });
-      } else {
-        const user = await this.prisma.user.update({
-          where: {
-            email: email,
-          },
-          data: {
             Liked_Videos: {
-              delete: {
-                id: dto.VideoId,
+              connect: {
+                email: email,
               },
             },
           },
@@ -129,21 +106,25 @@ export class LibraryService {
             id: true,
           },
         });
-
+      } else {
         await this.prisma.video.update({
           where: {
             id: dto.VideoId,
           },
           data: {
             likes: { decrement: 1 },
+            Liked_Videos: {
+              disconnect: {
+                email: email,
+              },
+            },
           },
           select: {
             id: true,
           },
         });
       }
-
-      return dto.VideoId;
+      return dto;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();
@@ -153,53 +134,33 @@ export class LibraryService {
   async AdddisLikedVideo(email: string, dto: dislike) {
     try {
       if (dto.operation) {
-        const user = await this.prisma.user.update({
-          where: {
-            email: email,
-          },
-          data: {
-            dislike_VideosIds: { push: dto.VideoId },
-          },
-        });
         await this.prisma.video.update({
           where: {
             id: dto.VideoId,
           },
           data: {
             dislikes: { increment: 1 },
-          },
-          select: {
-            id: true,
-          },
-        });
-        console.log(user);
-      } else {
-        const { dislike_VideosIds } = await this.prisma.user.findUnique({
-          where: {
-            email: email,
-          },
-          select: {
-            dislike_VideosIds: true,
-          },
-        });
-        await this.prisma.user.update({
-          where: {
-            email: email,
-          },
-          data: {
-            dislike_VideosIds: {
-              set: dislike_VideosIds.filter((id) => id !== dto.VideoId),
+            dislike_Videos: {
+              connect: {
+                email: email,
+              },
             },
           },
           select: {
             id: true,
           },
         });
+      } else {
         await this.prisma.video.update({
           where: {
             id: dto.VideoId,
           },
           data: {
+            dislike_Videos: {
+              disconnect: {
+                email: email,
+              },
+            },
             dislikes: { decrement: 1 },
           },
           select: {
@@ -207,7 +168,7 @@ export class LibraryService {
           },
         });
       }
-      return dto.VideoId;
+      return dto;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();

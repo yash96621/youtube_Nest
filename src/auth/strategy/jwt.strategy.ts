@@ -30,6 +30,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       select: {
         HistoryIds: true,
         LikedVideosIds: true,
+        dislike_VideosIds: true,
         id: true,
         email: true,
         History_save: true,
