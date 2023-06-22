@@ -41,52 +41,31 @@ export class SubscriptionService {
           },
           data: {
             Subscriber: { increment: 1 },
+            SubscribeBy: {
+              connect: {
+                email: email,
+              },
+            },
           },
           select: {
             Subscriber: true,
           },
         });
         console.log('subscribe', sub);
-        await this.prisma.user.update({
-          where: {
-            email: email,
-          },
-          data: {
-            Subscribe: {
-              connect: {
-                id: dto.ChannelId,
-              },
-            },
-          },
-          select: {
-            id: true,
-          },
-        });
 
         return dto.ChannelId;
       } else {
-        await this.prisma.user.update({
-          where: {
-            email: email,
-          },
-          data: {
-            Subscribe: {
-              disconnect: {
-                id: dto.ChannelId,
-              },
-            },
-          },
-          select: {
-            id: true,
-          },
-        });
-
         const unsub = await this.prisma.user.update({
           where: {
             id: dto.ChannelId,
           },
           data: {
             Subscriber: { decrement: 1 },
+            SubscribeBy: {
+              disconnect: {
+                email: email,
+              },
+            },
           },
           select: {
             Subscriber: true,
