@@ -49,7 +49,7 @@ export class VideoService {
     }
   }
 
-  async getuploadedvideo(email: string) {
+  async getuploadedvideo(email: string, skip: number, limit: number) {
     try {
       const user = await this.prisma.user.findUnique({
         where: { email: email },
@@ -65,6 +65,8 @@ export class VideoService {
               thumbnail_link: true,
               views: true,
             },
+            take: limit,
+            skip: skip,
           },
         },
       });

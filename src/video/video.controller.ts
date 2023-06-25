@@ -44,10 +44,14 @@ export class VideoController {
   }
 
   @UseGuards(JwtGuard)
-  @Get('getuploadedvideos')
-  getuploadedvideo(@GetUser('email') email: string) {
+  @Get('getuploadedvideos/:skip/:limit')
+  getuploadedvideo(
+    @GetUser('email') email: string,
+    @Param('skip', new ParseIntPipe()) skip: number,
+    @Param('limit', new ParseIntPipe()) limit: number,
+  ) {
     console.log('user with uploaded videos', email);
-    return this.VideoService.getuploadedvideo(email);
+    return this.VideoService.getuploadedvideo(email, skip, limit);
   }
 
   @UseGuards(JwtGuard)
