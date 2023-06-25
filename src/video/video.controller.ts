@@ -8,6 +8,7 @@ import {
   Controller,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   UploadedFiles,
   UseGuards,
@@ -24,9 +25,12 @@ export class VideoController {
     return this.VideoService.getvideo(videoid);
   }
 
-  @Get('getmanyvideo')
-  getmanyvideo() {
-    return this.VideoService.getmanyvideo();
+  @Get('getmanyvideo/:skip/:limit')
+  getmanyvideo(
+    @Param('skip', new ParseIntPipe()) skip: number,
+    @Param('limit', new ParseIntPipe()) limit: number,
+  ) {
+    return this.VideoService.getmanyvideo(skip, limit);
   }
 
   @Post('Searching')

@@ -3,6 +3,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
 import { subschannel } from './dto';
+import { from, interval, map, Observable } from 'rxjs';
 
 @Injectable()
 export class SubscriptionService {
@@ -81,23 +82,32 @@ export class SubscriptionService {
     }
   }
 
-  async getnotification(email: string, num: number) {
+  async getnotification(email: string, skip: number, limit: number) {
     try {
+      console.log('skip', skip, limit);
       const notification = await this.prisma.user.findFirst({
         where: {
           email: email,
         },
+        skip: skip,
+
         select: {
           Notification_info: true,
         },
-        take: -20,
       });
+
+      console.log('nit', notification);
 
       const notifications = await this.prisma.video.findMany({
         where: {
           id: {
             in: notification.Notification_info,
           },
+        },
+        skip: skip,
+        take: limit,
+        orderBy: {
+          createdAt: 'desc',
         },
         select: {
           video_name: true,

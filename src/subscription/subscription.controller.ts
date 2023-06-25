@@ -6,7 +6,9 @@ import {
   Controller,
   Get,
   Param,
+  ParseIntPipe,
   Post,
+  Sse,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -14,6 +16,7 @@ import {
 import { GetUser } from 'src/auth/decorator';
 import { JwtGuard } from 'src/auth/guard';
 import { subschannel } from './dto';
+import { Observable } from 'rxjs';
 
 @UseGuards(JwtGuard)
 @Controller('subscription')
@@ -31,9 +34,13 @@ export class SubscriptionController {
     return this.sub.getsubscsubscribechannelribe(email, dto);
   }
 
-  @Get('getnotification/:num')
-  getnotification(@GetUser('email') email: string, @Param('num') num: number) {
-    return this.sub.getnotification(email, num);
+  @Get('getnotification/:skip/:limit')
+  getnotification(
+    @GetUser('email') email: string,
+    @Param('skip', new ParseIntPipe()) skip: number,
+    @Param('limit', new ParseIntPipe()) limit: number,
+  ) {
+    return this.sub.getnotification(email, skip, limit);
   }
 
   @Get('setnoticount/:num')

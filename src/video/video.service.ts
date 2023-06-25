@@ -9,6 +9,7 @@ import { S3 } from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
 import { search, suggestion, videoup } from './dto/video.dto';
 import { User } from '@prisma/client';
+import { int } from 'aws-sdk/clients/datapipeline';
 
 @Injectable()
 export class VideoService {
@@ -97,10 +98,11 @@ export class VideoService {
     }
   }
 
-  async getmanyvideo() {
+  async getmanyvideo(skip: number, limit: number) {
     try {
       const videos = await this.prisma.video.findMany({
-        take: 30,
+        take: limit,
+        skip: skip,
         select: {
           id: true,
           Categorys: true,
