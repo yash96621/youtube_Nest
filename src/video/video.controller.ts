@@ -25,22 +25,31 @@ export class VideoController {
     return this.VideoService.getvideo(videoid);
   }
 
-  @Get('getmanyvideo/:skip/:limit')
+  @Get('getmanyvideo/:skip/:limit/:category')
   getmanyvideo(
     @Param('skip', new ParseIntPipe()) skip: number,
     @Param('limit', new ParseIntPipe()) limit: number,
+    @Param('category') category: string,
   ) {
-    return this.VideoService.getmanyvideo(skip, limit);
+    return this.VideoService.getmanyvideo(skip, limit, category);
   }
 
-  @Post('Searching')
-  Searching(@Body() dto: search) {
-    return this.VideoService.Searching(dto);
+  @Post('Searching/:skip/:limit')
+  Searching(
+    @Body() dto: search,
+    @Param('skip', new ParseIntPipe()) skip: number,
+    @Param('limit', new ParseIntPipe()) limit: number,
+  ) {
+    return this.VideoService.Searching(dto, skip, limit);
   }
 
-  @Post('SuggestionVideo')
-  getsuggestionvideo(@Body() dto: suggestion) {
-    return this.VideoService.getsuggestionvideo(dto);
+  @Post('SuggestionVideo/:skip/:limit')
+  getsuggestionvideo(
+    @Body() dto: suggestion,
+    @Param('skip', new ParseIntPipe()) skip: number,
+    @Param('limit', new ParseIntPipe()) limit: number,
+  ) {
+    return this.VideoService.getsuggestionvideo(dto, skip, limit);
   }
 
   @UseGuards(JwtGuard)

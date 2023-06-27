@@ -78,7 +78,7 @@ export class VideoService {
     }
   }
 
-  async Searching(dto: search) {
+  async Searching(dto: search, skip, limit) {
     try {
       console.log(dto.texts);
       const result = await this.prisma.video.findMany({
@@ -91,7 +91,8 @@ export class VideoService {
           video_name: true,
           id: true,
         },
-        take: 15,
+        take: limit,
+        skip: skip,
       });
       return result;
     } catch (error) {
@@ -100,26 +101,54 @@ export class VideoService {
     }
   }
 
-  async getmanyvideo(skip: number, limit: number) {
+  async getmanyvideo(skip: number, limit: number, category: string) {
     try {
-      const videos = await this.prisma.video.findMany({
-        take: limit,
-        skip: skip,
-        select: {
-          id: true,
-          Categorys: true,
-          thumbnail_link: true,
-          video_name: true,
-          views: true,
-          createdAt: true,
-          uploaded_Info: {
-            select: {
-              picture: true,
-              name: true,
+      let videos;
+      if (category === 'All') {
+        videos = await this.prisma.video.findMany({
+          take: limit,
+          skip: skip,
+          select: {
+            id: true,
+            Categorys: true,
+            thumbnail_link: true,
+            video_name: true,
+            views: true,
+            createdAt: true,
+            uploaded_Info: {
+              select: {
+                picture: true,
+                name: true,
+              },
             },
           },
-        },
-      });
+        });
+      } else {
+        videos = await this.prisma.video.findMany({
+          take: limit,
+          skip: skip,
+          where: {
+            Search_key: {
+              hasSome: category,
+            },
+          },
+          select: {
+            id: true,
+            Categorys: true,
+            thumbnail_link: true,
+            video_name: true,
+            views: true,
+            createdAt: true,
+            uploaded_Info: {
+              select: {
+                picture: true,
+                name: true,
+              },
+            },
+          },
+        });
+      }
+
       console.log('videos many ahsdkashd asdkhasd uh', videos);
       return videos;
     } catch (error) {
@@ -128,11 +157,12 @@ export class VideoService {
     }
   }
 
-  async getsuggestionvideo(dto: suggestion) {
+  async getsuggestionvideo(dto: suggestion, skip, limit) {
     try {
       console.log('tags', dto.Categorys);
       const videos = await this.prisma.video.findMany({
-        take: 20,
+        take: limit,
+        skip: skip,
         where: {
           Categorys: {
             hasSome: dto.Categorys,
