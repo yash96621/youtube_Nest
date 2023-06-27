@@ -43,7 +43,7 @@ export class CommentsService {
     }
   }
 
-  async getcommetnsvideo(videoid: string) {
+  async getcommetnsvideo(videoid: string, skip, limit) {
     try {
       const comment = await this.prisma.video.findUnique({
         where: {
@@ -52,6 +52,8 @@ export class CommentsService {
         select: {
           id: true,
           Comments: {
+            take: limit,
+            skip: skip,
             select: {
               createdAt: true,
               message: true,

@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Req,
   UseGuards,
@@ -28,9 +29,13 @@ export class CommentsController {
     return this.CommentsService.addcomment(dto, id);
   }
 
-  @Get('getcommentofvideo/:id')
-  getcommetnsvideo(@Param('id') videoid: string) {
+  @Get('getcommentofvideo/:id/:skip/:limit')
+  getcommetnsvideo(
+    @Param('id') videoid: string,
+    @Param('skip', new ParseIntPipe()) skip: number,
+    @Param('limit', new ParseIntPipe()) limit: number,
+  ) {
     console.log('Comment is comming');
-    return this.CommentsService.getcommetnsvideo(videoid);
+    return this.CommentsService.getcommetnsvideo(videoid, skip, limit);
   }
 }
