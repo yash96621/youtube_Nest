@@ -8,6 +8,8 @@ import {
   Get,
   Patch,
   Delete,
+  Param,
+  ParseIntPipe,
 } from '@nestjs/common';
 
 import { GetUser } from '../auth/decorator';
@@ -44,6 +46,16 @@ export class LibraryController {
   @Get('getlibrary')
   getlibrary(@GetUser('email') email: string) {
     return this.LibraryService.getlibrary(email);
+  }
+
+  @Get('geteachlibrary/:librarys/:skip/:limit')
+  geteachlibrary(
+    @GetUser('email') email: string,
+    @Param('librarys') library: string,
+    @Param('skip', new ParseIntPipe()) skip: number,
+    @Param('limit', new ParseIntPipe()) limit: number,
+  ) {
+    return this.LibraryService.geteachlibrary(email, skip, limit, library);
   }
 
   @Post('adddisLiked')

@@ -50,11 +50,11 @@ export class CommentsService {
           id: videoid,
         },
         select: {
-          id: true,
           Comments: {
             take: limit,
             skip: skip,
             select: {
+              id: true,
               createdAt: true,
               message: true,
               User: {

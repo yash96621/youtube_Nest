@@ -184,6 +184,7 @@ export class LibraryService {
 
         select: {
           History: {
+            take: 1,
             select: {
               createdAt: true,
               id: true,
@@ -195,6 +196,7 @@ export class LibraryService {
             },
           },
           Liked_Videos: {
+            take: 1,
             select: {
               createdAt: true,
               id: true,
@@ -205,12 +207,99 @@ export class LibraryService {
               video_name: true,
             },
           },
-          dislike_VideosIds: true,
           Watchlist: true,
         },
       });
       console.log('libraray this is' + user);
       return user;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async geteachlibrary(email: string, skip, limit, library) {
+    try {
+      if (library === 'Liked_Videos') {
+        const user = await this.prisma.user.findUnique({
+          where: {
+            email: email,
+          },
+
+          select: {
+            Liked_Videos: {
+              skip: skip,
+              take: limit,
+              select: {
+                createdAt: true,
+                id: true,
+                likes: true,
+                uploaded_Info: true,
+                thumbnail_link: true,
+                views: true,
+                video_name: true,
+              },
+            },
+          },
+        });
+        console.log('Liked_videos this is' + user);
+        return user;
+      } else if (library === 'Watch_List') {
+        const user = await this.prisma.user.findUnique({
+          where: {
+            email: email,
+          },
+
+          select: {
+            Watchlist: true,
+          },
+        });
+        const videos = await this.prisma.video.findMany({
+          where: {
+            id: {
+              in: user.Watchlist,
+            },
+          },
+          skip: skip,
+          take: limit,
+          select: {
+            createdAt: true,
+            id: true,
+            likes: true,
+            uploaded_Info: true,
+            thumbnail_link: true,
+            views: true,
+            video_name: true,
+          },
+        });
+
+        console.log('Watch_list this is' + videos);
+
+        return videos;
+      } else if (library === 'History') {
+        const user = await this.prisma.user.findUnique({
+          where: {
+            email: email,
+          },
+          select: {
+            History: {
+              take: limit,
+              skip: skip,
+              select: {
+                createdAt: true,
+                id: true,
+                likes: true,
+                uploaded_Info: true,
+                thumbnail_link: true,
+                views: true,
+                video_name: true,
+              },
+            },
+          },
+        });
+        console.log('history this is' + user);
+        return user;
+      }
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();

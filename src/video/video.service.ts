@@ -91,8 +91,6 @@ export class VideoService {
           video_name: true,
           id: true,
         },
-        take: limit,
-        skip: skip,
       });
       return result;
     } catch (error) {

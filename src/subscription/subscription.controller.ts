@@ -23,9 +23,13 @@ import { Observable } from 'rxjs';
 export class SubscriptionController {
   constructor(private sub: SubscriptionService) {}
 
-  @Get('getsubscribe')
-  getsubscribe(@GetUser('email') email: string) {
-    return this.sub.getsubscribe(email);
+  @Get('getsubscribe/:skip/:limit')
+  getsubscribe(
+    @GetUser('email') email: string,
+    @Param('skip', new ParseIntPipe()) skip: number,
+    @Param('limit', new ParseIntPipe()) limit: number,
+  ) {
+    return this.sub.getsubscribe(email, skip, limit);
   }
 
   @Post('subscribechannel')

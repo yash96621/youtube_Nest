@@ -9,7 +9,7 @@ import { from, interval, map, Observable } from 'rxjs';
 export class SubscriptionService {
   constructor(private prisma: PrismaService, private config: ConfigService) {}
 
-  async getsubscribe(email: string) {
+  async getsubscribe(email: string, skip, limit) {
     try {
       const subscribe = await this.prisma.user.findUnique({
         where: {
@@ -17,6 +17,8 @@ export class SubscriptionService {
         },
         select: {
           Subscribe: {
+            take: limit,
+            skip: skip,
             select: {
               id: true,
               picture: true,
