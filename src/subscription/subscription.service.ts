@@ -4,6 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
 import { subschannel } from './dto';
 import { from, interval, map, Observable } from 'rxjs';
+import { link } from 'fs';
 
 @Injectable()
 export class SubscriptionService {
@@ -35,7 +36,52 @@ export class SubscriptionService {
     }
   }
 
-  async getsubscsubscribechannelribe(email: string, dto: subschannel) {
+  async getsubscribvideos(email: string, skip: number, limit: number) {
+    try {
+      const subscribe = await this.prisma.user.findUnique({
+        where: {
+          email: email,
+        },
+        select: {
+          SubscribeIDs: true,
+        },
+      });
+
+      const sub = await this.prisma.video.findMany({
+        where: {
+          uploader_id: {
+            in: subscribe.SubscribeIDs,
+          },
+        },
+        take: limit,
+        skip: skip,
+        orderBy: {
+          createdAt: 'desc',
+        },
+        select: {
+          id: true,
+          thumbnail_link: true,
+          video_name: true,
+          views: true,
+          createdAt: true,
+          uploaded_Info: {
+            select: {
+              name: true,
+              id: true,
+              picture: true,
+            },
+          },
+        },
+      });
+      console.log('subs', sub);
+      return sub;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async subscribechannel(email: string, dto: subschannel) {
     try {
       if (dto.sub) {
         const sub = await this.prisma.user.update({

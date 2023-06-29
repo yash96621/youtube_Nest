@@ -108,13 +108,13 @@ export class VideoService {
           skip: skip,
           select: {
             id: true,
-            Categorys: true,
             thumbnail_link: true,
             video_name: true,
             views: true,
             createdAt: true,
             uploaded_Info: {
               select: {
+                id: true,
                 picture: true,
                 name: true,
               },
@@ -132,13 +132,14 @@ export class VideoService {
           },
           select: {
             id: true,
-            Categorys: true,
+
             thumbnail_link: true,
             video_name: true,
             views: true,
             createdAt: true,
             uploaded_Info: {
               select: {
+                id: true,
                 picture: true,
                 name: true,
               },
@@ -181,6 +182,7 @@ export class VideoService {
           createdAt: true,
           uploaded_Info: {
             select: {
+              id: true,
               picture: true,
               name: true,
             },

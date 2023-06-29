@@ -32,10 +32,19 @@ export class SubscriptionController {
     return this.sub.getsubscribe(email, skip, limit);
   }
 
+  @Get('getsubscribvideos/:skip/:limit')
+  getsubscribvideos(
+    @GetUser('email') email: string,
+    @Param('skip', new ParseIntPipe()) skip: number,
+    @Param('limit', new ParseIntPipe()) limit: number,
+  ) {
+    return this.sub.getsubscribvideos(email, skip, limit);
+  }
+
   @Post('subscribechannel')
   subscribechannel(@GetUser('email') email: string, @Body() dto: subschannel) {
     console.log(email, 'email id');
-    return this.sub.getsubscsubscribechannelribe(email, dto);
+    return this.sub.subscribechannel(email, dto);
   }
 
   @Get('getnotification/:skip/:limit')
