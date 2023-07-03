@@ -64,6 +64,11 @@ export class VideoService {
               createdAt: true,
               thumbnail_link: true,
               views: true,
+              uploaded_Info: {
+                select: {
+                  id: true,
+                },
+              },
             },
             take: limit,
             skip: skip,
@@ -110,6 +115,7 @@ export class VideoService {
             id: true,
             thumbnail_link: true,
             video_name: true,
+            video_link: true,
             views: true,
             createdAt: true,
             uploaded_Info: {
