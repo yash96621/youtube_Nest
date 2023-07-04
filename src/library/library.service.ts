@@ -34,29 +34,55 @@ export class LibraryService {
 
   async savehistory(email: string, dto: savehistory) {
     try {
-      const user = await this.prisma.user.update({
-        where: {
-          email: email,
-        },
-        data: {
-          History: {
-            connect: {
-              id: dto.VideoId,
+      if (dto.opration) {
+        const user = await this.prisma.user.update({
+          where: {
+            email: email,
+          },
+          data: {
+            History: {
+              connect: {
+                id: dto.VideoId,
+              },
             },
           },
-        },
-        select: {
-          id: true,
-        },
-      });
+          select: {
+            id: true,
+          },
+        });
 
-      const video = await this.prisma.video.update({
-        where: { id: dto.VideoId },
-        data: { views: { increment: 1 } },
-        select: {
-          id: true,
-        },
-      });
+        const video = await this.prisma.video.update({
+          where: { id: dto.VideoId },
+          data: { views: { increment: 1 } },
+          select: {
+            id: true,
+          },
+        });
+      } else {
+        const user = await this.prisma.user.update({
+          where: {
+            email: email,
+          },
+          data: {
+            History: {
+              disconnect: {
+                id: dto.VideoId,
+              },
+            },
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        const video = await this.prisma.video.update({
+          where: { id: dto.VideoId },
+          data: { views: { decrement: 1 } },
+          select: {
+            id: true,
+          },
+        });
+      }
       return dto.VideoId;
     } catch (error) {
       console.log(error);

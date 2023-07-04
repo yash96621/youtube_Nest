@@ -10,6 +10,10 @@ export class savehistory {
   @IsNotEmpty()
   @IsString()
   VideoId: string;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  opration: boolean;
 }
 
 export class dislike {

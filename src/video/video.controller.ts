@@ -64,7 +64,23 @@ export class VideoController {
   }
 
   @UseGuards(JwtGuard)
-  @Post('videoUpload') // we can also uses another method to do this same way
+  @Get('deletevideo/:id')
+  deletevideo(@Param('id') videoid: string, @GetUser('email') email: string) {
+    return this.VideoService.deletevideo(videoid);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('addwatchlist/:id')
+  addwatchlist(
+    @Param('id') videoid: string,
+    @Body() op,
+    @GetUser('email') email: string,
+  ) {
+    return this.VideoService.addwatchlist(videoid, op, email);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post('videoUpload') // we can also uses another method to do  this same way
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: 'video', maxCount: 1 },
