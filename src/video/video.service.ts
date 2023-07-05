@@ -49,27 +49,49 @@ export class VideoService {
     }
   }
 
-  async addwatchlist(videoid, op, email) {
+  async addwatchlist(videoid: string, op, email: string) {
     try {
-      const wat = await this.prisma.user.findUnique({
-        where: {
-          email: email,
-        },
-        select: {
-          Watchlist: true,
-        },
-      });
-
-      await this.prisma.user.update({
-        where: {
-          email: email,
-        },
-        data: {
-          Watchlist: {
-            set: wat.Watchlist.filter((id) => id !== videoid),
+      console.log('op', op);
+      if (op.operation) {
+        const wat = await this.prisma.user.update({
+          where: {
+            email: email,
           },
-        },
-      });
+          data: {
+            Watchlist: {
+              push: videoid,
+            },
+          },
+          select: {
+            Watchlist: true,
+          },
+        });
+        console.log('watchlist', wat);
+      } else {
+        const wat = await this.prisma.user.findUnique({
+          where: {
+            email: email,
+          },
+          select: {
+            Watchlist: true,
+          },
+        });
+
+        await this.prisma.user.update({
+          where: {
+            email: email,
+          },
+          data: {
+            Watchlist: {
+              set: wat.Watchlist.filter((id) => id !== videoid),
+            },
+          },
+          select: {
+            id: true,
+          },
+        });
+      }
+      return videoid;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();
@@ -132,6 +154,8 @@ export class VideoService {
             hasSome: dto.texts,
           },
         },
+        skip: skip,
+        take: limit,
         select: {
           video_name: true,
           id: true,

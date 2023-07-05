@@ -13,7 +13,7 @@ export class savehistory {
 
   @IsNotEmpty()
   @IsBoolean()
-  opration: boolean;
+  operation: boolean;
 }
 
 export class dislike {

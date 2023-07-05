@@ -66,16 +66,18 @@ export class VideoController {
   @UseGuards(JwtGuard)
   @Get('deletevideo/:id')
   deletevideo(@Param('id') videoid: string, @GetUser('email') email: string) {
+    console.log('this is deleted video');
     return this.VideoService.deletevideo(videoid);
   }
 
   @UseGuards(JwtGuard)
-  @Get('addwatchlist/:id')
+  @Post('addwatchlist/:id')
   addwatchlist(
     @Param('id') videoid: string,
     @Body() op,
     @GetUser('email') email: string,
   ) {
+    console.log('this is watchlist');
     return this.VideoService.addwatchlist(videoid, op, email);
   }
 

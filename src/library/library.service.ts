@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { dislike, historyturn, savehistory } from './dto';
+import { take } from 'rxjs';
 
 @Injectable()
 export class LibraryService {
@@ -34,7 +35,7 @@ export class LibraryService {
 
   async savehistory(email: string, dto: savehistory) {
     try {
-      if (dto.opration) {
+      if (dto.operation) {
         const user = await this.prisma.user.update({
           where: {
             email: email,
@@ -203,7 +204,7 @@ export class LibraryService {
 
   async getlibrary(email: string) {
     try {
-      const user = await this.prisma.user.findUnique({
+      let user = await this.prisma.user.findUnique({
         where: {
           email: email,
         },
@@ -236,6 +237,30 @@ export class LibraryService {
           Watchlist: true,
         },
       });
+
+      console.log('watchlist', user.Watchlist);
+
+      let watchlist = await this.prisma.video.findMany({
+        where: {
+          id: {
+            in: user.Watchlist,
+          },
+        },
+        select: {
+          createdAt: true,
+          id: true,
+          likes: true,
+          uploaded_Info: true,
+          thumbnail_link: true,
+          views: true,
+          video_name: true,
+        },
+        take: 1,
+      });
+
+      user['watch'] = watchlist;
+
+      console.log('watchlist', user);
       console.log('libraray this is' + user);
       return user;
     } catch (error) {
