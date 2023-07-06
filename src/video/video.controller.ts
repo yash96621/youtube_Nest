@@ -1,4 +1,4 @@
-import { search, suggestion, videoup } from './dto';
+import { data, search, suggestion, videoup } from './dto';
 import { VideoService } from './video.service';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
@@ -104,6 +104,27 @@ export class VideoController {
       email,
       id,
     );
+  }
+
+  @UseGuards(JwtGuard)
+  @Post('edit')
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'picture', maxCount: 1 },
+      { name: 'bgimage', maxCount: 1 },
+    ]),
+  )
+  edit(
+    @GetUser('id') id: string,
+    @UploadedFiles()
+    files: { picture: Express.Multer.File; bgimage: Express.Multer.File },
+    @Body() data: data,
+  ) {
+    console.log('files', files.picture, files.bgimage);
+    console.log('id', id);
+    console.log('data', data);
+    // return 'ok';
+    return this.VideoService.edit(id, files, data);
   }
 }
 

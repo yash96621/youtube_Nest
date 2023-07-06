@@ -326,7 +326,7 @@ export class LibraryService {
 
         console.log('Watch_list this is' + videos);
 
-        return videos;
+        return { Watch_List: videos };
       } else if (library === 'History') {
         const user = await this.prisma.user.findUnique({
           where: {

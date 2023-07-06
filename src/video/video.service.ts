@@ -7,7 +7,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { S3 } from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
-import { search, suggestion, videoup } from './dto/video.dto';
+import { data, search, suggestion, videoup } from './dto/video.dto';
 import { User } from '@prisma/client';
 import { int } from 'aws-sdk/clients/datapipeline';
 
@@ -265,6 +265,76 @@ export class VideoService {
       console.log(error);
       throw new InternalServerErrorException();
     }
+  }
+
+  async edit(
+    id: string,
+    files: { picture: Express.Multer.File; bgimage: Express.Multer.File },
+    data: data,
+  ) {
+    try {
+      console.log('picture', files.picture);
+      console.log('bgimage', files.bgimage);
+
+      if (files.picture) {
+        const pic = files.picture[0].originalname;
+        var presult = await this.uploadS3(files.picture[0].buffer, pic);
+      }
+      if (files.bgimage) {
+        const bg = files.bgimage[0].originalname;
+        var bgresult = await this.uploadS3(files.bgimage[0].buffer, bg);
+      }
+
+      console.log('presult', presult);
+      console.log('bgresult', bgresult);
+
+      if (files.picture) {
+        const picture = await this.prisma.user.update({
+          where: {
+            id: id,
+          },
+          data: {
+            picture: presult.Location,
+          },
+          select: {
+            picture: true,
+          },
+        });
+      }
+      if (files.bgimage) {
+        const bgimage = await this.prisma.user.update({
+          where: {
+            id: id,
+          },
+          data: {
+            bgimage: bgresult.Location,
+          },
+          select: {
+            bgimage: true,
+          },
+        });
+      }
+      if (data.name) {
+        const name = await this.prisma.user.update({
+          where: {
+            id: id,
+          },
+          data: {
+            name: data.name,
+          },
+          select: {
+            name: true,
+          },
+        });
+      }
+
+      return {
+        picture: presult?.Location,
+        bgimage: bgresult?.Location,
+        name: data.name,
+      };
+    } catch (error) {}
+    throw new Error('Method not implemented.');
   }
 
   async uploadvideo(

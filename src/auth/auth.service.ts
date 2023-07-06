@@ -6,6 +6,9 @@ import { userlogin } from './AuthDto';
 import { JwtService } from '@nestjs/jwt';
 
 import { v4 as uuid } from 'uuid';
+import { Request } from 'express';
+import { ParamsDictionary } from 'express-serve-static-core';
+import { ParsedQs } from 'qs';
 
 @Injectable()
 export class AuthService {

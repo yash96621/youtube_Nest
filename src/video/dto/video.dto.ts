@@ -36,3 +36,9 @@ export class search {
   @IsNotEmpty()
   texts: Array<string>;
 }
+
+export class data {
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+}

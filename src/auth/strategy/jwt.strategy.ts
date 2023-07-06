@@ -28,9 +28,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         email: payload.Useremail,
       },
       select: {
-        HistoryIds: true,
-        LikedVideosIds: true,
-        dislike_VideosIds: true,
         id: true,
         email: true,
         History_save: true,
@@ -40,6 +37,10 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         picture: true,
         SubscribeIDs: true,
         Subscriber: true,
+        HistoryIds: true,
+        LikedVideosIds: true,
+        dislike_VideosIds: true,
+        Watchlist: true,
       },
     });
     console.log(user);
