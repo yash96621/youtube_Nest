@@ -171,10 +171,13 @@ export class VideoService {
   async getmanyvideo(skip: number, limit: number, category: string) {
     try {
       let videos;
-      if (category === 'All') {
+      console.log('category', category);
+      console.log('limit', limit, 'skip:', skip);
+      if (category === 'all') {
         videos = await this.prisma.video.findMany({
           take: limit,
           skip: skip,
+          orderBy: { createdAt: 'desc' },
           select: {
             id: true,
             thumbnail_link: true,
