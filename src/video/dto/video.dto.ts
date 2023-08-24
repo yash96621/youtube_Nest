@@ -23,11 +23,8 @@ export class videoup {
 }
 
 export class suggestion {
-  @IsArray()
-  @IsNotEmpty()
-  Categorys: Array<string>;
-
   @IsString()
+  @IsNotEmpty()
   videoId: string;
 }
 

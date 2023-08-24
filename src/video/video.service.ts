@@ -8,8 +8,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { S3 } from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
 import { data, search, suggestion, videoup } from './dto/video.dto';
-import { User } from '@prisma/client';
-import { int } from 'aws-sdk/clients/datapipeline';
 
 @Injectable()
 export class VideoService {
@@ -231,13 +229,20 @@ export class VideoService {
 
   async getsuggestionvideo(dto: suggestion, skip, limit) {
     try {
-      console.log('tags', dto.Categorys);
+      const videocat = await this.prisma.video.findUnique({
+        where: {
+          id: dto.videoId,
+        },
+        select: {
+          Categorys: true,
+        },
+      });
       const videos = await this.prisma.video.findMany({
         take: limit,
         skip: skip,
         where: {
           Categorys: {
-            hasSome: dto.Categorys,
+            hasSome: videocat.Categorys,
           },
           AND: {
             NOT: [
