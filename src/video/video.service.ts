@@ -198,7 +198,7 @@ export class VideoService {
           skip: skip,
           where: {
             Search_key: {
-              hasSome: category,
+              hasSome: [category],
             },
           },
           select: {
