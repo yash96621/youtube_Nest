@@ -96,13 +96,19 @@ export class VideoService {
     }
   }
 
-  async deletevideo(videoid: string) {
+  async deletevideo(videoid: string, S3video: string, S3thumbnail: string) {
     try {
+      const videodelete = await this.deletes3(S3video);
+      const thumbnaildelete = await this.deletes3(S3thumbnail);
+      console.log('videodelete', videodelete);
+      console.log('thumbnaildelete', thumbnaildelete);
+
       await this.prisma.video.delete({
         where: {
           id: videoid,
         },
       });
+      return { id: videoid };
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();
@@ -123,6 +129,7 @@ export class VideoService {
               video_name: true,
               createdAt: true,
               thumbnail_link: true,
+              video_link: true,
               views: true,
               uploaded_Info: {
                 select: {
@@ -446,10 +453,28 @@ export class VideoService {
       });
     });
   }
+
   getS3() {
     return new S3({
       accessKeyId: this.config.get('AWS_ACCESS_KEY_ID'),
       secretAccessKey: this.config.get('AWS_SECRET_ACCESS_KEY'),
+    });
+  }
+
+  async deletes3(Key: string): Promise<any> {
+    const s3 = this.getS3();
+    const params = {
+      Bucket: this.config.get('AWS_BUCKET_NAME'),
+      Key: Key,
+    };
+    return new Promise((resolve, reject) => {
+      s3.deleteObject(params, (err: Error, data: object) => {
+        if (err) {
+          Logger.error(err);
+          reject(err.message);
+        }
+        resolve(data);
+      });
     });
   }
 }

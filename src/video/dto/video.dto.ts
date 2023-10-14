@@ -39,3 +39,13 @@ export class data {
   @IsString()
   name: string;
 }
+
+export class deletevideoS3 {
+  @IsString()
+  @IsNotEmpty()
+  S3video: string;
+
+  @IsString()
+  @IsNotEmpty()
+  S3thumbnail: string;
+}

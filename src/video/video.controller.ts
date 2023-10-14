@@ -1,4 +1,4 @@
-import { data, search, suggestion, videoup } from './dto';
+import { data, deletevideoS3, search, suggestion, videoup } from './dto';
 import { VideoService } from './video.service';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
@@ -6,6 +6,7 @@ import { Express } from 'express';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -64,10 +65,14 @@ export class VideoController {
   }
 
   @UseGuards(JwtGuard)
-  @Get('deletevideo/:id')
-  deletevideo(@Param('id') videoid: string, @GetUser('email') email: string) {
-    console.log('this is deleted video');
-    return this.VideoService.deletevideo(videoid);
+  @Post('deletevideo/:id')
+  deletevideo(
+    @Param('id') videoid: string,
+    @GetUser('email') email: string,
+    @Body() dto: deletevideoS3,
+  ) {
+    console.log('S3video', dto.S3video, 'S3thumbnail', dto.S3thumbnail);
+    return this.VideoService.deletevideo(videoid, dto.S3video, dto.S3thumbnail);
   }
 
   @UseGuards(JwtGuard)
