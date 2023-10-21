@@ -35,6 +35,10 @@ model User {
   History           Video[]    @relation("History", fields: [HistoryIds], references: [id])
   Watchlist         String[]   @unique @db.ObjectId
   Comments          Comments[]
+  GroupIDs          String[]   @db.ObjectId
+  Groups            Groups[]   @relation("Memebers", fields: [GroupIDs], references: [id])
+  OwnedGroups       Groups[]   @relation("admin")
+  Chat              Chat[]     @relation("Chat_Owner")
 }
 
 model Video {
@@ -58,6 +62,8 @@ model Video {
   dislike_VideosIds String[]   @unique @db.ObjectId
   dislike_Videos    User[]     @relation("Disliked Videos", fields: [dislike_VideosIds], references: [id])
   Comments          Comments[] @relation("Comments")
+  AccessIDs         String[]   @db.ObjectId
+  Access            Groups[]   @relation("AccessVideo", fields: [AccessIDs], references: [id])
 }
 
 model Comments {
@@ -68,4 +74,29 @@ model Comments {
   User      User     @relation(fields: [userId], references: [id])
   userId    String   @db.ObjectId
   createdAt DateTime @default(now())
+}
+
+model Groups {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  GroupName        String   @unique
+  admin_id         String   @db.ObjectId
+  admin_Info       User     @relation("admin", fields: [admin_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  memeberIDs       String[] @db.ObjectId
+  memebers         User[]   @relation("Memebers", fields: [memeberIDs], references: [id])
+  AccessVideoIDS   String[] @db.ObjectId
+  AccessVideo      Video[]  @relation("AccessVideo", fields: [memeberIDs], references: [id])
+  Chats            Chat[]   @relation("Chats")
+  GroupImage       String?
+  GroupDescription String?
+}
+
+model Chat {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  message String
+
+  Chat_OwnerId   String   @db.ObjectId
+  Chat_OwnerInfo User     @relation("Chat_Owner", fields: [Chat_OwnerId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  Group_ID       String   @db.ObjectId
+  Group_Chat     Groups   @relation("Chats", fields: [Group_ID], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  createdAt      DateTime @default(now())
 }

@@ -100,9 +100,6 @@ export class VideoService {
     try {
       const videodelete = await this.deletes3(S3video);
       const thumbnaildelete = await this.deletes3(S3thumbnail);
-      console.log('videodelete', videodelete);
-      console.log('thumbnaildelete', thumbnaildelete);
-
       await this.prisma.video.delete({
         where: {
           id: videoid,
