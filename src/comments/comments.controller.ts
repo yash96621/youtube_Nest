@@ -19,7 +19,7 @@ import { AddCommentsDto } from './dto';
 @Controller('comments')
 export class CommentsController {
   constructor(private CommentsService: CommentsService) {}
-  // @UseGuards(AuthGuard('jwt')) // we can simply write this but we seperate  class for guarde
+  // @UseGuards(('jwt')) // we can simply write this but we seperate  class for guarde
   // @UseGuards(JwtGuard) ==> guard at router level is for perticuler route so we transform that guarde to controller level to appy for app routes
   @UseGuards(JwtGuard)
   @Post('addcomment')

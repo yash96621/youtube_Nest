@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+// import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { AddCommentsDto } from './dto/comment.dto';
