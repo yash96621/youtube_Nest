@@ -453,15 +453,15 @@ export class VideoService {
 
   getS3() {
     return new S3({
-      accessKeyId: 'AKIAVJ4WCRNFJ6W3HQX4',
-      secretAccessKey: this.config.get('AWS_SECRET_ACCESS_KEY'),
+      accessKeyId: this.config.get('ACCESS_KEY_ID'),
+      secretAccessKey: this.config.get('SECRET_ACCESS_KEY'),
     });
   }
 
   async deletes3(Key: string): Promise<any> {
     const s3 = this.getS3();
     const params = {
-      Bucket: this.config.get('AWS_BUCKET_NAME'),
+      Bucket: this.config.get('BUCKET_NAME'),
       Key: Key,
     };
     return new Promise((resolve, reject) => {
