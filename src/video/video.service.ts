@@ -453,7 +453,7 @@ export class VideoService {
 
   getS3() {
     return new S3({
-      accessKeyId: this.config.get('AWS_ACCESS_KEY_ID'),
+      accessKeyId: 'AKIAVJ4WCRNFJ6W3HQX4',
       secretAccessKey: this.config.get('AWS_SECRET_ACCESS_KEY'),
     });
   }
