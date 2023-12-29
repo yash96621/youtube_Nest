@@ -16,8 +16,6 @@ async function bootstrap() {
       'http://65.0.68.166',
       'http://localhost:5000',
       'http://localhost:3000',
-      '*',
-      'https://youtube-nest.vercel.app',
     ],
   });
   // app.use(json({ limit: '4gb' }));

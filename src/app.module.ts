@@ -7,8 +7,6 @@ import { VideoModule } from './video/video.module';
 import { LibraryModule } from './library/library.module';
 import { SubscriptionModule } from './subscription/subscription.module';
 import { HelloWorldModule } from './hello_world/hello_world.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
 
 @Module({
   imports: [
@@ -22,10 +20,6 @@ import { join } from 'path';
     LibraryModule,
     SubscriptionModule,
     HelloWorldModule,
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'client'),
-      exclude: ['/(.*)'],
-    }),
   ],
   controllers: [],
   providers: [],
