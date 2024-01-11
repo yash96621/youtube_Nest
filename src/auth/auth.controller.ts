@@ -23,6 +23,7 @@ export class AuthController {
   @UseGuards(JwtGuard)
   @Get('Refreshlogin')
   Relogin(@GetUser() req: any) {
+    console.log('req', req);
     return this.AuthService.Refreshlogin(req);
   }
 }

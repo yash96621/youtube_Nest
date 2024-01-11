@@ -72,10 +72,10 @@ export class AuthService {
 
   async Refreshlogin(req: any) {
     try {
-      const authToken = await this.SignToken(req.user.email, req.user.name);
+      const authToken = await this.SignToken(req.email, req.name);
       return {
         authToken,
-        user: req.user,
+        user: req,
       };
     } catch (error) {
       console.log(error);
