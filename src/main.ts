@@ -16,13 +16,14 @@ async function bootstrap() {
       'http://65.0.68.166',
       'http://localhost:5000',
       'http://localhost:3000',
+      '*',
     ],
   });
   // app.use(json({ limit: '4gb' }));
   // app.use(urlencoded({ extended: true, limit: '4gb' }));
 
-  app.use(bodyParser.json({ limit: '4gb' }));
-  app.use(bodyParser.urlencoded({ limit: '4gb', extended: true }));
+  app.use(bodyParser.json({ limit: '5gb' }));
+  app.use(bodyParser.urlencoded({ limit: '5gb', extended: true }));
 
   app.useGlobalPipes(
     new ValidationPipe({
