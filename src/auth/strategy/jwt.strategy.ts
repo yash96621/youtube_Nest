@@ -43,7 +43,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         Watchlist: true,
       },
     });
-    console.log(user);
+    console.log('this is user of user', user);
     return user;
   }
 }

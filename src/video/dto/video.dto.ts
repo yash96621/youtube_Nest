@@ -49,3 +49,44 @@ export class deletevideoS3 {
   @IsNotEmpty()
   S3thumbnail: string;
 }
+
+export class Names {
+  @IsString()
+  @IsNotEmpty()
+  VideoName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  VideoType: string;
+
+  @IsString()
+  @IsNotEmpty()
+  ImageType: string;
+
+  @IsString()
+  @IsNotEmpty()
+  ImageName: string;
+}
+
+export class UploadFileName {
+  @IsString()
+  @IsNotEmpty()
+  VideoName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  ImageName: string;
+
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+
+  @IsString()
+  des: string;
+
+  @IsArray()
+  cat: string[];
+
+  @IsArray()
+  searchkey: string[];
+}

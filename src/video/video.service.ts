@@ -7,11 +7,58 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { S3 } from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
-import { data, search, suggestion, videoup } from './dto/video.dto';
+import {
+  Names,
+  UploadFileName,
+  data,
+  search,
+  suggestion,
+  videoup,
+} from './dto/video.dto';
+import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
 
 @Injectable()
 export class VideoService {
   constructor(private prisma: PrismaService, private config: ConfigService) {}
+
+  async getSignedurl(dto: Names) {
+    try {
+      const s3 = this.getS3();
+
+      const myBucket = process.env.BUCKET_NAME;
+      const signedUrlExpireSeconds = 60 * 20;
+      const Videoname = dto.VideoName;
+      const Imagename = dto.ImageName;
+
+      const VideoUrl = await s3.getSignedUrlPromise('putObject', {
+        Bucket: myBucket,
+        Key: Videoname,
+        Expires: signedUrlExpireSeconds,
+        ContentType: dto.VideoType,
+      });
+      const ImageUrl = await s3.getSignedUrl('putObject', {
+        Bucket: myBucket,
+        Key: Imagename,
+        Expires: signedUrlExpireSeconds,
+        ContentType: dto.ImageType,
+      });
+      console.log('VideoUrl', VideoUrl);
+      console.log('ImageUrl', ImageUrl);
+      return {
+        video: {
+          VideoUrl,
+          Videoname,
+        },
+        image: {
+          ImageUrl,
+          Imagename,
+        },
+      };
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
 
   async getvideo(videoId: string) {
     try {
@@ -345,8 +392,85 @@ export class VideoService {
         bgimage: bgresult?.Location,
         name: data.name,
       };
-    } catch (error) {}
-    throw new Error('Method not implemented.');
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async UploadedVideoAdd(dto: UploadFileName, email: string) {
+    try {
+      console.log('dto', dto);
+      console.log('email', email);
+
+      const user = await this.prisma.user.update({
+        where: { email: email },
+        data: {
+          Uploaded_video: {
+            create: {
+              video_name: dto.name,
+              video_link: `${this.config.get('PreLocation')}${dto.VideoName}`,
+              thumbnail_link: `${this.config.get('PreLocation')}${
+                dto.ImageName
+              }`,
+              description: dto.des,
+              Categorys: dto.cat,
+              Search_key: dto.searchkey,
+            },
+          },
+        },
+        select: {
+          id: true,
+          Uploaded_video: {
+            where: {
+              video_name: dto.name,
+            },
+            select: {
+              id: true,
+              video_name: true,
+              thumbnail_link: true,
+              views: true,
+              createdAt: true,
+            },
+          },
+        },
+      });
+
+      Promise.all([
+        await this.prisma.user.update({
+          where: {
+            email: email,
+          },
+          data: {
+            SubscribeBy: {
+              updateMany: {
+                where: {
+                  SubscribeIDs: {
+                    has: user.id,
+                  },
+                },
+                data: {
+                  Notification_info: {
+                    push: user.Uploaded_video[0].id,
+                  },
+                  notify_count: {
+                    increment: 1,
+                  },
+                },
+              },
+            },
+          },
+          select: {
+            Notification_info: true,
+          },
+        }),
+      ]);
+      console.log(user);
+      return user;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
   }
 
   async uploadvideo(
@@ -397,33 +521,35 @@ export class VideoService {
         },
       });
 
-      await this.prisma.user.update({
-        where: {
-          email: email,
-        },
-        data: {
-          SubscribeBy: {
-            updateMany: {
-              where: {
-                SubscribeIDs: {
-                  has: id,
+      Promise.all([
+        await this.prisma.user.update({
+          where: {
+            email: email,
+          },
+          data: {
+            SubscribeBy: {
+              updateMany: {
+                where: {
+                  SubscribeIDs: {
+                    has: id,
+                  },
                 },
-              },
-              data: {
-                Notification_info: {
-                  push: user.Uploaded_video[0].id,
-                },
-                notify_count: {
-                  increment: 1,
+                data: {
+                  Notification_info: {
+                    push: user.Uploaded_video[0].id,
+                  },
+                  notify_count: {
+                    increment: 1,
+                  },
                 },
               },
             },
           },
-        },
-        select: {
-          Notification_info: true,
-        },
-      });
+          select: {
+            Notification_info: true,
+          },
+        }),
+      ]);
 
       console.log(user);
       return user;

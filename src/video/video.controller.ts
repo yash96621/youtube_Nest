@@ -1,4 +1,12 @@
-import { data, deletevideoS3, search, suggestion, videoup } from './dto';
+import {
+  Names,
+  UploadFileName,
+  data,
+  deletevideoS3,
+  search,
+  suggestion,
+  videoup,
+} from './dto';
 import { VideoService } from './video.service';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
@@ -33,6 +41,12 @@ export class VideoController {
     @Param('category') category: string,
   ) {
     return this.VideoService.getmanyvideo(skip, limit, category);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post('getSignedurl')
+  getSignedurl(@Body() dto: Names) {
+    return this.VideoService.getSignedurl(dto);
   }
 
   @Post('Searching/:skip/:limit')
@@ -84,6 +98,16 @@ export class VideoController {
   ) {
     console.log('this is watchlist');
     return this.VideoService.addwatchlist(videoid, op, email);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post('UploadedVideoAdd')
+  UploadedVideoAdd(
+    @Body() dto: UploadFileName,
+    @GetUser('email') email: string,
+  ) {
+    console.log('email', email);
+    return this.VideoService.UploadedVideoAdd(dto, email);
   }
 
   @UseGuards(JwtGuard)

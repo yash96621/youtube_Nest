@@ -21,6 +21,8 @@
     "test:e2e": "jest --watch --no-cache --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@aws-sdk/s3-presigned-post": "^3.550.0",
+    "@aws-sdk/s3-request-presigner": "^3.490.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.1",
     "@nestjs/core": "^9.0.0",
