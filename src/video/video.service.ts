@@ -144,8 +144,17 @@ export class VideoService {
 
   async deletevideo(videoid: string, S3video: string, S3thumbnail: string) {
     try {
+      console.log(
+        '🚀 ~ VideoService ~ deletevideo ~ S3thumbnail:',
+        S3thumbnail,
+      );
       // Perform S3 deletions in parallel
-      await Promise.all([this.deletes3(S3video), this.deletes3(S3thumbnail)]);
+      const videoname = await this.getFileNameFromS3Url(S3video);
+      console.log('🚀 ~ VideoService ~ deletevideo ~ videoname:', videoname);
+      const imagename = await this.getFileNameFromS3Url(S3thumbnail);
+      console.log('🚀 ~ VideoService ~ deletevideo ~ imagename:', imagename);
+
+      await Promise.all([this.deletes3(videoname), this.deletes3(imagename)]);
 
       // Delete the video record from the database
       await this.prisma.video.delete({
@@ -159,6 +168,16 @@ export class VideoService {
       console.error('Error deleting video:', error);
       throw new InternalServerErrorException();
     }
+  }
+
+  async getFileNameFromS3Url(s3Url: string) {
+    // Split the URL by '/'
+    const urlParts = s3Url.split('/');
+    // Get the last part which contains the file name
+    const fileName = urlParts[urlParts.length - 1];
+    // Decode the URL-encoded file name
+    const decodedFileName = decodeURIComponent(fileName);
+    return decodedFileName;
   }
 
   async getuploadedvideo(email: string, skip: number, limit: number) {
@@ -565,6 +584,7 @@ export class VideoService {
   }
 
   async deletes3(Key: string): Promise<any> {
+    console.log('this is bucket', this.config.get('BUCKET_NAME'));
     const s3 = this.getS3();
     const params = {
       Bucket: this.config.get('BUCKET_NAME'),
