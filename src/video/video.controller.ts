@@ -46,6 +46,7 @@ export class VideoController {
   @UseGuards(JwtGuard)
   @Post('getSignedurl')
   getSignedurl(@Body() dto: Names) {
+    console.log('this is getsignurl');
     return this.VideoService.getSignedurl(dto);
   }
 

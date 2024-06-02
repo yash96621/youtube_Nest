@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { dislike, historyturn, savehistory } from './dto';
-import { take } from 'rxjs';
+// import { take } from 'rxjs';
 
 @Injectable()
 export class LibraryService {
@@ -204,11 +204,8 @@ export class LibraryService {
 
   async getlibrary(email: string) {
     try {
-      let user = await this.prisma.user.findUnique({
-        where: {
-          email: email,
-        },
-
+      const user = await this.prisma.user.findUnique({
+        where: { email: email },
         select: {
           History: {
             take: 1,
@@ -238,9 +235,13 @@ export class LibraryService {
         },
       });
 
-      console.log('watchlist', user.Watchlist);
+      if (!user) {
+        throw new Error('User not found');
+      }
 
-      let watchlist = await this.prisma.video.findMany({
+      console.log('Watchlist IDs:', user.Watchlist);
+
+      const watchlist = await this.prisma.video.findMany({
         where: {
           id: {
             in: user.Watchlist,
@@ -258,13 +259,15 @@ export class LibraryService {
         take: 1,
       });
 
-      user['watch'] = watchlist;
+      const library = {
+        ...user,
+        watch: watchlist,
+      };
 
-      console.log('watchlist', user);
-      console.log('libraray this is' + user);
-      return user;
+      console.log('Library:', library);
+      return library;
     } catch (error) {
-      console.log(error);
+      console.error('Error fetching library:', error);
       throw new InternalServerErrorException();
     }
   }

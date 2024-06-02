@@ -3,8 +3,8 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 // import { User } from '@prisma/client';
 import { subschannel } from './dto';
-import { from, interval, map, Observable } from 'rxjs';
-import { link } from 'fs';
+// import { from, interval, map, Observable } from 'rxjs';
+// import { link } from 'fs';
 
 @Injectable()
 export class SubscriptionService {

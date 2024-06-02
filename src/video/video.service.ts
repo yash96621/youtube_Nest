@@ -15,7 +15,6 @@ import {
   suggestion,
   videoup,
 } from './dto/video.dto';
-import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
 
 @Injectable()
 export class VideoService {
@@ -145,16 +144,19 @@ export class VideoService {
 
   async deletevideo(videoid: string, S3video: string, S3thumbnail: string) {
     try {
-      const videodelete = await this.deletes3(S3video);
-      const thumbnaildelete = await this.deletes3(S3thumbnail);
+      // Perform S3 deletions in parallel
+      await Promise.all([this.deletes3(S3video), this.deletes3(S3thumbnail)]);
+
+      // Delete the video record from the database
       await this.prisma.video.delete({
         where: {
           id: videoid,
         },
       });
+
       return { id: videoid };
     } catch (error) {
-      console.log(error);
+      console.error('Error deleting video:', error);
       throw new InternalServerErrorException();
     }
   }
@@ -329,68 +331,46 @@ export class VideoService {
   async edit(
     id: string,
     files: { picture: Express.Multer.File; bgimage: Express.Multer.File },
-    data: data,
+    data: any,
   ) {
     try {
-      console.log('picture', files.picture);
-      console.log('bgimage', files.bgimage);
-
+      const uploadPromises = [];
       if (files.picture) {
         const pic = files.picture[0].originalname;
-        var presult = await this.uploadS3(files.picture[0].buffer, pic);
+        uploadPromises.push(this.uploadS3(files.picture[0].buffer, pic));
       }
       if (files.bgimage) {
         const bg = files.bgimage[0].originalname;
-        var bgresult = await this.uploadS3(files.bgimage[0].buffer, bg);
+        uploadPromises.push(this.uploadS3(files.bgimage[0].buffer, bg));
       }
 
-      console.log('presult', presult);
-      console.log('bgresult', bgresult);
+      const [presult, bgresult] = await Promise.all(uploadPromises);
 
-      if (files.picture) {
-        const picture = await this.prisma.user.update({
-          where: {
-            id: id,
-          },
-          data: {
-            picture: presult.Location,
-          },
-          select: {
-            picture: true,
-          },
-        });
+      const updateData: any = {};
+      if (files.picture && presult) {
+        updateData.picture = presult.Location;
       }
-      if (files.bgimage) {
-        const bgimage = await this.prisma.user.update({
-          where: {
-            id: id,
-          },
-          data: {
-            bgimage: bgresult.Location,
-          },
-          select: {
-            bgimage: true,
-          },
-        });
+      if (files.bgimage && bgresult) {
+        updateData.bgimage = bgresult.Location;
       }
       if (data.name) {
-        const name = await this.prisma.user.update({
-          where: {
-            id: id,
-          },
-          data: {
-            name: data.name,
-          },
-          select: {
-            name: true,
-          },
-        });
+        updateData.name = data.name;
       }
 
+      const user = await this.prisma.user.update({
+        where: { id },
+        data: updateData,
+        select: {
+          picture: !!updateData.picture,
+          bgimage: !!updateData.bgimage,
+          name: !!updateData.name,
+        },
+      });
+
       return {
-        picture: presult?.Location,
-        bgimage: bgresult?.Location,
-        name: data.name,
+        picture: user.picture || null,
+        bgimage: user.bgimage || null,
+        name: user.name || null,
       };
     } catch (error) {
       console.log(error);
@@ -483,14 +463,18 @@ export class VideoService {
     try {
       const vname = video[0].originalname;
       const tname = thumbnail[0].originalname;
-      const cat = await dto.cat.split(',');
-      const key = await dto.searchkey.split(',');
+      const cat = dto.cat.split(',');
+      const key = dto.searchkey.split(',');
 
-      const vresult = await this.uploadS3(video[0].buffer, vname);
-      const tresult = await this.uploadS3(thumbnail[0].buffer, tname);
+      const [vresult, tresult] = await Promise.all([
+        this.uploadS3(video[0].buffer, vname),
+        this.uploadS3(thumbnail[0].buffer, tname),
+      ]);
+
       console.log(tresult);
       console.log(vresult);
       console.log('keys', key);
+
       const user = await this.prisma.user.update({
         where: { email: email },
         data: {
@@ -521,35 +505,31 @@ export class VideoService {
         },
       });
 
-      Promise.all([
-        await this.prisma.user.update({
-          where: {
-            email: email,
-          },
-          data: {
-            SubscribeBy: {
-              updateMany: {
-                where: {
-                  SubscribeIDs: {
-                    has: id,
-                  },
+      await this.prisma.user.update({
+        where: { email: email },
+        data: {
+          SubscribeBy: {
+            updateMany: {
+              where: {
+                SubscribeIDs: {
+                  has: id,
                 },
-                data: {
-                  Notification_info: {
-                    push: user.Uploaded_video[0].id,
-                  },
-                  notify_count: {
-                    increment: 1,
-                  },
+              },
+              data: {
+                Notification_info: {
+                  push: user.Uploaded_video[0].id,
+                },
+                notify_count: {
+                  increment: 1,
                 },
               },
             },
           },
-          select: {
-            Notification_info: true,
-          },
-        }),
-      ]);
+        },
+        select: {
+          Notification_info: true,
+        },
+      });
 
       console.log(user);
       return user;
