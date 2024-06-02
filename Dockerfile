@@ -1,8 +1,15 @@
 FROM node:21
-WORKDIR /user/src/app
+
+WORKDIR /usr/src/app
+
 COPY . .
 
-RUN bun install
-EXPOSE 3000
+RUN npm install
 
-CMD [ "bun" ,"run" ,"start:dev" ]
+RUN npx prisma generate
+
+RUN npm run build
+
+EXPOSE 5000
+
+CMD [ "npm" ,"run" ,"start:prod" ]
