@@ -31,7 +31,7 @@ async function bootstrap() {
     }),
   ); // to use dto , and also use it global level without this can not effect of dto
   // app.use(globalmiddleware)   //global middleware
-  console.log('server is running on', process.env.PORT || 5000);
-  await app.listen(process.env.PORT || 5000, '0.0.0.0');
+  console.log('server is running on', process.env.PORT || 80);
+  await app.listen(process.env.PORT || 80, '0.0.0.0');
 }
 bootstrap();
