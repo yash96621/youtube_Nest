@@ -12,12 +12,7 @@ import * as bodyParser from 'body-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: [
-      'http://65.0.68.166',
-      'http://localhost:5000',
-      'http://localhost:3000',
-      '*',
-    ],
+    origin: ['*'],
   });
   // app.use(json({ limit: '4gb' }));
   // app.use(urlencoded({ extended: true, limit: '4gb' }));
@@ -32,6 +27,6 @@ async function bootstrap() {
   ); // to use dto , and also use it global level without this can not effect of dto
   // app.use(globalmiddleware)   //global middleware
   console.log('server is running on', process.env.PORT || 80);
-  await app.listen(process.env.PORT || 80, '0.0.0.0');
+  await app.listen(process.env.PORT || 3000, '0.0.0.0');
 }
 bootstrap();
